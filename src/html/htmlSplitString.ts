@@ -9,7 +9,7 @@ const matchRegex = /(<.+?>|\s+|[^<\s]+)/g;
 const matchHtmlTag = /<(\/?[a-zA-Z0-9]+)(.*?)>/;
 const matchHtmlAttributes = /(\S+)="(.+?)"/g;
 
-export function splitString(text: string): HtmlToken[] {
+export function htmlSplitString(text: string): HtmlToken[] {
 	return Array.from(text.matchAll(matchRegex))
 		.map(match => match[0])
 		.filter(match => match.trim().length > 0)

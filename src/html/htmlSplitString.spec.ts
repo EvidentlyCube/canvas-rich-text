@@ -1,38 +1,38 @@
 import { assert } from "chai";
 import { describe, it } from 'mocha';
-import {HtmlToken, splitString} from "./splitText";
+import {HtmlToken, htmlSplitString} from "./htmlSplitString";
 
-describe("splitString", () => {
+describe("htmlhtmlSplitString", () => {
 	it("No html tags", () => {
-		const tags = splitString('Some text');
+		const tags = htmlSplitString('Some text');
 
 		assertLength(tags, 2);
 		assertText(tags[0], 'Some');
 		assertText(tags[1], 'text');
 	});
 	it("Only html tags", () => {
-		const tags = splitString('<span></span>');
+		const tags = htmlSplitString('<span></span>');
 
 		assertLength(tags, 2);
 		assertTag(tags[0], 'span', {});
 		assertTag(tags[1], '/span');
 	});
 	it("Auto close tag", () => {
-		const tags = splitString('<span/>');
+		const tags = htmlSplitString('<span/>');
 
 		assertLength(tags, 2);
 		assertTag(tags[0], 'span', {});
 		assertTag(tags[1], '/span');
 	});
 	it("Html with attributes", () => {
-		const tags = splitString('<span padding="1 2 3 4"/>');
+		const tags = htmlSplitString('<span padding="1 2 3 4"/>');
 
 		assertLength(tags, 2);
 		assertTag(tags[0], 'span', {padding: '1 2 3 4'});
 		assertTag(tags[1], '/span');
 	});
 	it("Complex", () => {
-		const tags = splitString('text<span size="5" font="arial">other also<hr/>something</span>else yep');
+		const tags = htmlSplitString('text<span size="5" font="arial">other also<hr/>something</span>else yep');
 
 		assertLength(tags, 10);
 		assertText(tags[0], 'text');

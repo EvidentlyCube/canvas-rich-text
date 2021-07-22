@@ -1,1 +1,1 @@
-export {RichText} from "./RichText";
+export {HtmlTokenizer as RichText} from "./html/HtmlTokenizer";
