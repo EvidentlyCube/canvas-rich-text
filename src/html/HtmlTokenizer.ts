@@ -1,6 +1,7 @@
-import {CanvasRichTextToken} from "../Token";
+import {CanvasRichTextToken, TextStyle} from "../Token";
 import {htmlSplitString} from "./htmlSplitString";
 import {CanvasRichTextTokens} from "../common";
+import { RichTextRenderer } from "../RichTextRenderer";
 
 interface StyleOptions {
 	fontSize: string;
@@ -58,10 +59,15 @@ export const HtmlTokenizer = {
 		for (const htmlToken of htmlSplitString(text)) {
 			// Text token
 			if (typeof htmlToken.text !== 'undefined') {
+				const style:TextStyle = {
+					fontSize: parseInt(currentElement.options.fontSize)
+				};
+
 				tokens.push({
 					type: CanvasRichTextTokens.Text,
 					text: htmlToken.text,
-					fontSize: parseInt(currentElement.options.fontSize)
+					metrics: RichTextRenderer.measureText(htmlToken.text, style),
+					style, 
 				});
 
 			} else if (typeof htmlToken.style !== 'undefined') {

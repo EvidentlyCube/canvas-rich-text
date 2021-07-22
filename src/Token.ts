@@ -1,13 +1,18 @@
 import {CanvasRichTextTokens} from "./common";
 
+export interface TextStyle {
+	fontSize: number;
+}
+
 export interface TextToken {
 	type: CanvasRichTextTokens.Text;
 	text: string;
-	fontSize: number;
+	style: TextStyle;
+	metrics: TextMetrics;
 }
 
 export interface NewlineToken {
 	type: CanvasRichTextTokens.Newline;
 }
 
-export type CanvasRichTextToken = TextToken | NewlineToken
+export type CanvasRichTextToken = TextToken | NewlineToken;

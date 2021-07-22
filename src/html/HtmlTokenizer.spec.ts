@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { describe, it } from 'mocha';
 import { CanvasRichTextTokens } from "../common";
-import { CanvasRichTextToken, TextToken } from "../Token";
+import { CanvasRichTextToken, TextStyle, TextToken } from "../Token";
 import { HtmlTokenizer, HtmlTokenizerOptions } from "./HtmlTokenizer";
 
 describe("HtmlTokenizer", () => {
@@ -86,14 +86,14 @@ describe("HtmlTokenizer", () => {
 	});
 });
 
-function assertText(token: CanvasRichTextToken, text: string, options: HtmlTokenizerOptions, overrides?: Partial<TextToken>) {
+function assertText(token: CanvasRichTextToken, text: string, options: HtmlTokenizerOptions, overrides?: Partial<TextStyle>) {
 	if (token.type !== CanvasRichTextTokens.Text) {
 		assert.equal(token.type, CanvasRichTextTokens.Text);
 		return;
 	}
 
 	assert.equal(token.text, text);
-	assert.equal(token.fontSize, overrides?.fontSize ?? options.defaultFontSize);
+	assert.equal(token.style.fontSize, overrides?.fontSize ?? options.defaultFontSize);
 }
 function assertNewline(token: CanvasRichTextToken) {
 	assert.equal(token.type, CanvasRichTextTokens.Newline);
