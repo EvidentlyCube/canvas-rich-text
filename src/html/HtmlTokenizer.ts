@@ -45,7 +45,6 @@ export const HtmlTokenizer = {
 
 	tokenizeString(text: string, options?: HtmlTokenizerOptions): CanvasRichTextToken[] {
 		options = options ?? HtmlTokenizer.defaultHtmlTokenizerOptions;
-		
 		const tokens: CanvasRichTextToken[] = [];
 		const stylesStack: TokenizeElement[] = [];
 

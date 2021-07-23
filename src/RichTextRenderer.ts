@@ -1,4 +1,5 @@
-import { TextStyle, TextToken } from "./Token";
+import {CanvasRichTextToken, TextStyle, TextToken} from "./Token";
+import {CanvasRichTextTokens} from "./common";
 
 export interface RichTextRenderPoint {
 	x: number;
@@ -14,9 +15,6 @@ export interface ArrangeOptions {
 }
 
 export interface RichTextRenderLine {
-	left: number;
-	top: number;
-	right: number;
 	bottom: number;
 	points: RichTextRenderPoint[];
 }
@@ -26,9 +24,57 @@ const canvas = typeof document !== 'undefined'
 	: undefined;
 const canvasContext = canvas?.getContext('2d');
 
-function configureCanvas(style: TextStyle) {
-	if (canvasContext) {
-		canvasContext.font = `${style.fontSize} Arial`;
+function configureCanvas(style: TextStyle, target: CanvasRenderingContext2D) {
+	target.font = `${style.fontSize}px Arial`;
+	target.textBaseline = 'alphabetic';
+}
+
+function groupIntoLines(tokens: CanvasRichTextToken[], options: ArrangeOptions) {
+	const lines: TextToken[][] = [];
+	let nextLine: TextToken[] = [];
+
+	let nextX = 0;
+	for (const token of tokens) {
+		if (token.type === CanvasRichTextTokens.Newline) {
+			lines.push(nextLine);
+			nextLine = [];
+			continue;
+		}
+
+		const tokenWidth = token.metrics.width;
+
+		if (nextLine.length === 0) {
+			nextLine.push(token);
+			nextX = token.metrics.width;
+		} else if (nextX + options.spaceWidth + tokenWidth > options.width) {
+			lines.push(nextLine);
+			nextLine = [];
+			nextLine.push(token);
+			nextX = tokenWidth;
+		} else {
+			nextLine.push(token);
+			nextX += options.spaceWidth + tokenWidth;
+		}
+	}
+	lines.push(nextLine);
+
+	return lines;
+}
+
+function arrangeLine(y: number, line: TextToken[], opts: ArrangeOptions): RichTextRenderLine {
+	const maxAscent = line.reduce((max, token) => Math.max(max, token.metrics.actualBoundingBoxAscent), 0);
+	const maxDescent = line.reduce((max, token) => Math.max(max, token.metrics.actualBoundingBoxDescent), 0);
+console.log(maxAscent);
+	let nextX = 0;
+	return {
+		bottom: y + maxDescent + maxAscent,
+		points: line.map(token => {
+			const x = nextX + opts.spaceWidth;
+			nextX = x + token.metrics.width;
+			return {
+				x, token, y: y + maxAscent// + token.metrics.actualBoundingBoxAscent
+			}
+		})
 	}
 }
 
@@ -38,13 +84,13 @@ export const RichTextRenderer = {
 			return {} as any;
 		}
 
-		configureCanvas(style);
+		configureCanvas(style, canvasContext);
 
 		return canvasContext.measureText(text);
 	},
 
-	arrangeText(tokens: TextToken[], options: Partial<ArrangeOptions>): RichTextRenderLine[] {
-		const opt:ArrangeOptions = {
+	arrangeText(tokens: CanvasRichTextToken[], options: Partial<ArrangeOptions>): RichTextRenderLine[] {
+		const opts:ArrangeOptions = {
 			width: Number.MAX_SAFE_INTEGER,
 			lineSpacing: 4,
 			spaceWidth: 4,
@@ -52,53 +98,24 @@ export const RichTextRenderer = {
 			...options
 		};
 
-		const lines: RichTextRenderLine[] = [];
-		let nextLine: RichTextRenderLine = {
-			points: [],
-			left: 0,
-			right: 0,
-			bottom: 0,
-			top: 0
-		};
-
-		const commitLine = () => {
-			lines.push(nextLine);
-
-			const y = nextLine.bottom + opt.lineSpacing;
-			nextLine = {
-				points: [],
-				left: 0,
-				right: 0,
-				bottom: y,
-				top: y
-			};
+		const lines = groupIntoLines(tokens, opts);
+		const richLines: RichTextRenderLine[] = [];
+		let nextLineY = 0;
+		for (const line of lines) {
+			const richLine = arrangeLine(nextLineY, line, opts);
+			nextLineY = richLine.bottom + opts.lineSpacing;
+			richLines.push(richLine);
 		}
 
-		const refreshLine = () => {
-			nextLine.top = nextLine.points.reduce((top, point) => Math.min(top, point.y), nextLine.top);
-			nextLine.left = nextLine.points.reduce((left, point) => Math.min(left, point.y), nextLine.left);
-			nextLine.bottom = nextLine.points.reduce((bottom, point) => Math.max(bottom, point.y), nextLine.bottom);
-			nextLine.right = nextLine.points.reduce((right, point) => Math.max(right, point.y), nextLine.right);
-		}
+		return richLines;
+	},
 
-		for (const token of tokens) {
-			if (nextLine.right + token.metrics.width + opt.spaceWidth > opt.width && nextLine.points.length > 0) {
-				commitLine();
+	renderLines(lines: RichTextRenderLine[], target: CanvasRenderingContext2D, x: number = 0, y : number = 0) {
+		for (const line of lines) {
+			for (const point of line.points) {
+				configureCanvas(point.token.style, target);
+				target.fillText(point.token.text, point.x + x, point.y + y);
 			}
-
-			const space = nextLine.points.length > 0 ? opt.spaceWidth : 0;
-			nextLine.points.push({
-				x: nextLine.right + space, 
-				y: nextLine.top, 
-				token
-			});
-			refreshLine();
 		}
-
-		if (nextLine.points.length > 0) {
-			commitLine();
-		}
-
-		return lines;
 	}
 }
