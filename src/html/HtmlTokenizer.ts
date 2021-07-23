@@ -3,8 +3,16 @@ import {htmlSplitString} from "./htmlSplitString";
 import {CanvasRichTextTokens} from "../common";
 import { RichTextRenderer } from "../RichTextRenderer";
 
+const allowedStyles = ['normal', 'italic'];
+const allowedWeights = ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder'];
+const allowdVariants = ['normal','small-caps','common-ligatures','no-common-ligatures','slashed-zero','proportional-nums','tabular-nums'];
+
 interface StyleOptions {
 	fontSize: string;
+	fontFamily: string;
+	fontStyle: 'normal'|'italic';
+	fontWeight: '100'|'200'|'300'|'400'|'500'|'600'|'700'|'800'|'900'|'normal'|'bold'|'lighter'|'bolder';
+	fontVariant: ('normal'|'small-caps'|'common-ligatures'|'no-common-ligatures'|'slashed-zero'|'proportional-nums'|'tabular-nums')[];
 }
 
 interface TokenizeElement {
@@ -16,6 +24,7 @@ export interface HtmlTokenizerOptions {
 	blockTags: string[];
 	defaultFontSize: string;
 	attributeToStyleMap: Record<string, keyof StyleOptions>;
+	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
 }
 
 function extractStylesFromAttributes(attributes: Record<string, string>, attributeToStyleMap: Record<string, keyof StyleOptions>) {
@@ -34,7 +43,10 @@ function extractStylesFromAttributes(attributes: Record<string, string>, attribu
 export const HtmlTokenizer = {
 	get defaultHtmlTokenizerOptions(): HtmlTokenizerOptions {
 		return{
-			blockTags: ['p', 'div', 'br'], 
+			blockTags: ['p', 'div', 'br'],
+			tagDefaultStyles: {
+				'b': {}
+			},
 			defaultFontSize: '14',
 			attributeToStyleMap: {
 				fontsize: 'fontSize',
