@@ -1,19 +1,8 @@
-import {CanvasRichTextToken, TextStyle} from "../Token";
+import {CanvasRichTextToken} from "../Token";
 import {htmlSplitString} from "./htmlSplitString";
 import {CanvasRichTextTokens} from "../common";
-import { RichTextRenderer } from "../RichTextRenderer";
-
-const allowedStyles = ['normal', 'italic'];
-const allowedWeights = ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder'];
-const allowdVariants = ['normal','small-caps','common-ligatures','no-common-ligatures','slashed-zero','proportional-nums','tabular-nums'];
-
-interface StyleOptions {
-	fontSize: string;
-	fontFamily: string;
-	fontStyle: 'normal'|'italic';
-	fontWeight: '100'|'200'|'300'|'400'|'500'|'600'|'700'|'800'|'900'|'normal'|'bold'|'lighter'|'bolder';
-	fontVariant: ('normal'|'small-caps'|'common-ligatures'|'no-common-ligatures'|'slashed-zero'|'proportional-nums'|'tabular-nums')[];
-}
+import {RichTextRenderer} from "../RichTextRenderer";
+import {cleanupStyleOption, StyleOptions} from "../StyleOptions";
 
 interface TokenizeElement {
 	tag: string;
@@ -22,7 +11,7 @@ interface TokenizeElement {
 
 export interface HtmlTokenizerOptions {
 	blockTags: string[];
-	defaultFontSize: string;
+	defaultStyles: StyleOptions;
 	attributeToStyleMap: Record<string, keyof StyleOptions>;
 	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
 }
@@ -31,9 +20,18 @@ function extractStylesFromAttributes(attributes: Record<string, string>, attribu
 	const result: Partial<StyleOptions> = {};
 
 	for (const attribute in attributes) {
+		if (!attributes.hasOwnProperty(attribute)) {
+			continue;
+		}
+
 		const attributeLC = attribute.toLowerCase();
 		if (attributeToStyleMap.hasOwnProperty(attributeLC)) {
-			result[attributeToStyleMap[attributeLC]] = attributes[attribute];
+			const attributeName = attributeToStyleMap[attributeLC];
+			const value = cleanupStyleOption(attributeName, attributes[attribute]);
+			if (value !== undefined) {
+				// Casting to any to avoid painful type juggling. We trust `cleanupStyleOption` returns correct
+				result[attributeName] = value as any;
+			}
 		}
 	}
 
@@ -42,17 +40,24 @@ function extractStylesFromAttributes(attributes: Record<string, string>, attribu
 
 export const HtmlTokenizer = {
 	get defaultHtmlTokenizerOptions(): HtmlTokenizerOptions {
-		return{
+		return {
 			blockTags: ['p', 'div', 'br'],
 			tagDefaultStyles: {
-				'b': {}
+				'b': {},
 			},
-			defaultFontSize: '14',
+			defaultStyles: {
+				fontSize: '14',
+				fontFamily: 'Arial',
+				fontStretch: 'normal',
+				fontStyle: 'normal',
+				fontVariant: [],
+				fontWeight: "normal"
+			},
 			attributeToStyleMap: {
 				fontsize: 'fontSize',
 				size: 'fontSize',
-			}
-		}
+			},
+		};
 	},
 
 	tokenizeString(text: string, options?: HtmlTokenizerOptions): CanvasRichTextToken[] {
@@ -63,22 +68,22 @@ export const HtmlTokenizer = {
 		let currentElement: TokenizeElement = {
 			tag: 'body',
 			options: {
-				fontSize: options.defaultFontSize,
+				...options.defaultStyles
 			},
 		};
-		
+
 		for (const htmlToken of htmlSplitString(text)) {
 			// Text token
 			if (typeof htmlToken.text !== 'undefined') {
-				const style:TextStyle = {
-					fontSize: parseInt(currentElement.options.fontSize)
+				const style: StyleOptions = {
+					...currentElement.options
 				};
 
 				tokens.push({
 					type: CanvasRichTextTokens.Text,
 					text: htmlToken.text,
 					metrics: RichTextRenderer.measureText(htmlToken.text, style),
-					style, 
+					style,
 				});
 
 			} else if (typeof htmlToken.style !== 'undefined') {
@@ -88,8 +93,8 @@ export const HtmlTokenizer = {
 					tag: htmlToken.tag!,
 					options: {
 						...currentElement.options,
-						...extractStylesFromAttributes(htmlToken.style, options.attributeToStyleMap)
-					}
+						...extractStylesFromAttributes(htmlToken.style, options.attributeToStyleMap),
+					},
 				};
 			} else {
 				// Close tag

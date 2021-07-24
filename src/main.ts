@@ -10,7 +10,7 @@ input.value = `<p>
 	<span size="20">This</span>
 	<span size="25">This</span>
 	<span size="30">This</span>
-	<span size="35">This</span>
+	<span size="35" fontVariant="small-caps">This</span>
 	<span size="40">This</span>
 	</p>lol<br/>pop a`
 input.oninput = redraw;
@@ -27,6 +27,7 @@ app.appendChild(canvas);
 redraw();
 function redraw() {
 	const tokens = HtmlTokenizer.tokenizeString(input.value);
+	console.log(tokens);
 	const lines = RichTextRenderer.arrangeText(tokens, {
 		width: 2500
 	});

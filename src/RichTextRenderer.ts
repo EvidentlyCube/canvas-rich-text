@@ -1,5 +1,6 @@
-import {CanvasRichTextToken, TextStyle, TextToken} from "./Token";
+import {CanvasRichTextToken, TextToken} from "./Token";
 import {CanvasRichTextTokens} from "./common";
+import {StyleOptions} from "./StyleOptions";
 
 export interface RichTextRenderPoint {
 	x: number;
@@ -24,8 +25,8 @@ const canvas = typeof document !== 'undefined'
 	: undefined;
 const canvasContext = canvas?.getContext('2d');
 
-function configureCanvas(style: TextStyle, target: CanvasRenderingContext2D) {
-	target.font = `${style.fontSize}px Arial`;
+function configureCanvas(style: StyleOptions, target: CanvasRenderingContext2D) {
+	target.font = `${style.fontStyle} ${style.fontVariant.join(' ')} ${style.fontWeight} ${style.fontStretch} ${style.fontSize} ${style.fontFamily}`;
 	target.textBaseline = 'alphabetic';
 }
 
@@ -79,7 +80,7 @@ console.log(maxAscent);
 }
 
 export const RichTextRenderer = {
-	measureText(text: string, style: TextStyle): TextMetrics {
+	measureText(text: string, style: StyleOptions): TextMetrics {
 		if (!canvasContext) {
 			return {} as any;
 		}
