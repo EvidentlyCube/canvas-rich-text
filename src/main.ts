@@ -7,7 +7,7 @@ const input = document.createElement('input');
 
 input.value = `<p>
 	<span size="15">This</span>
-	<span size="20">This</span>
+	<span size="20" color="red">This</span>
 	<span size="25" weight="bold">This</span>
 	<span size="30">This</span>
 	<span size="35" fontVariant="small-caps">This</span>

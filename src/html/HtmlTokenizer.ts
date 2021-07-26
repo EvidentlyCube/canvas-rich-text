@@ -63,7 +63,8 @@ export const HtmlTokenizer = {
 				fontfamily: 'fontFamily',
 				family: 'fontFamily',
 				fontstretch: 'fontStretch',
-				stretch: 'fontStretch'
+				stretch: 'fontStretch',
+				color: 'color'
 			},
 		};
 	},
