@@ -1,15 +1,12 @@
-import { assert } from "chai";
-import { describe, it } from 'mocha';
-import { CanvasRichTextTokens } from "../common";
-import { CanvasRichTextToken, } from "../Token";
-import { HtmlTokenizer } from "./HtmlTokenizer";
+import {assert} from "chai";
+import {describe, it} from 'mocha';
+import {Token, TokenType} from "../Token";
+import {HtmlTokenizer} from "./HtmlTokenizer";
 import {StyleOptions} from "../StyleOptions";
-import {CanvasRichText} from "../CanvasRichText";
+import {defaultStyle} from "../CanvasRichText";
 
 describe("HtmlTokenizer", () => {
 	describe('Simple tokenize', () => {
-		const options = HtmlTokenizer.defaultHtmlTokenizerOptions;
-
 		it('Empty text', () => {
 			const result = HtmlTokenizer.tokenizeString('');
 			assert.lengthOf(result, 0);
@@ -91,10 +88,10 @@ describe("HtmlTokenizer", () => {
 		it('attribute > tag', () => {
 			assertText(HtmlTokenizer.tokenizeString('<b weight="normal">child</b>')[0], 'child', {fontWeight: "normal"});
 		});
-	})
+	});
 	describe('Customizing attribute map', () => {
 		it("fontSize customization", () => {
-			const options = HtmlTokenizer.defaultHtmlTokenizerOptions;
+			const options = HtmlTokenizer.createOptions();
 			options.attributeToStyleMap['duck'] = 'fontSize';
 
 			const result = HtmlTokenizer.tokenizeString('<span duck="7">quack</span>', options);
@@ -105,32 +102,33 @@ describe("HtmlTokenizer", () => {
 	});
 	describe('Customizing default styles', () => {
 		it("default style is used", () => {
-			const options = HtmlTokenizer.defaultHtmlTokenizerOptions;
+			const options = HtmlTokenizer.createOptions();
 			options.defaultStyles.fontSize = '44';
 
 			const result = HtmlTokenizer.tokenizeString('test');
 			assert.lengthOf(result, 1);
 
 			assertText(result[0], 'test');
-		
-		})
+
+		});
 	});
 });
 
-function assertText(token: CanvasRichTextToken, text: string, overrides?: Partial<StyleOptions>) {
-	if (token.type !== CanvasRichTextTokens.Text) {
-		assert.equal(token.type, CanvasRichTextTokens.Text);
+function assertText(token: Token, text: string, overrides?: Partial<StyleOptions>) {
+	if (token.type !== TokenType.Text) {
+		assert.equal(token.type, TokenType.Text);
 		return;
 	}
 
 	assert.equal(token.text, text);
-	assert.equal(token.style.fontSize, overrides?.fontSize ?? CanvasRichText.defaultStyle.fontSize);
-	assert.equal(token.style.fontFamily, overrides?.fontFamily ?? CanvasRichText.defaultStyle.fontFamily);
-	assert.equal(token.style.fontStyle, overrides?.fontStyle ?? CanvasRichText.defaultStyle.fontStyle);
-	assert.equal(token.style.fontStretch, overrides?.fontStretch ?? CanvasRichText.defaultStyle.fontStretch);
-	assert.equal(token.style.fontWeight, overrides?.fontWeight ?? CanvasRichText.defaultStyle.fontWeight);
-	assert.deepEqual(token.style.fontVariant, overrides?.fontVariant ?? CanvasRichText.defaultStyle.fontVariant);
+	assert.equal(token.style.fontSize, overrides?.fontSize ?? defaultStyle.fontSize);
+	assert.equal(token.style.fontFamily, overrides?.fontFamily ?? defaultStyle.fontFamily);
+	assert.equal(token.style.fontStyle, overrides?.fontStyle ?? defaultStyle.fontStyle);
+	assert.equal(token.style.fontStretch, overrides?.fontStretch ?? defaultStyle.fontStretch);
+	assert.equal(token.style.fontWeight, overrides?.fontWeight ?? defaultStyle.fontWeight);
+	assert.deepEqual(token.style.fontVariant, overrides?.fontVariant ?? defaultStyle.fontVariant);
 }
-function assertNewline(token: CanvasRichTextToken) {
-	assert.equal(token.type, CanvasRichTextTokens.Newline);
+
+function assertNewline(token: Token) {
+	assert.equal(token.type, TokenType.Newline);
 }

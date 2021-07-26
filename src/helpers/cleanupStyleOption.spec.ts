@@ -1,7 +1,7 @@
 import {assert} from "chai";
 import {describe, it} from 'mocha';
 import {__isValidColor, cleanupStyleOption, validCssColorNames} from "./cleanupStyleOption";
-import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights} from "../common";
+import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights} from "../StyleOptions";
 
 let lastError = {
 	field: "",

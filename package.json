@@ -1,20 +1,25 @@
 {
-  "name": "canvas-rich-text",
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "serve": "vite preview",
-    "test": "mocha",
-    "test:watch": "mocha --watch"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.2.21",
-    "@types/mocha": "^8.2.3",
-    "chai": "^4.3.4",
-    "mocha": "^9.0.2",
-    "ts-node": "^10.1.0",
-    "typescript": "^4.3.2",
-    "vite": "^2.4.3"
-  }
+    "name": "canvas-rich-text",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "files": [
+        "dist"
+    ],
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "serve": "vite preview",
+        "test": "mocha",
+        "test:watch": "mocha --watch"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.2.21",
+        "@types/mocha": "^8.2.3",
+        "chai": "^4.3.4",
+        "mocha": "^9.0.2",
+        "ts-node": "^10.1.0",
+        "typescript": "^4.3.2",
+        "vite": "^2.4.3"
+    }
 }

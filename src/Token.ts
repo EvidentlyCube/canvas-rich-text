@@ -1,15 +1,19 @@
-import {CanvasRichTextTokens} from "./common";
 import {StyleOptions} from "./StyleOptions";
 
+export enum TokenType {
+	Text = 0,
+	Newline = 1
+}
+
 export interface TextToken {
-	type: CanvasRichTextTokens.Text;
+	type: TokenType.Text;
 	text: string;
 	style: StyleOptions;
 	metrics: TextMetrics;
 }
 
 export interface NewlineToken {
-	type: CanvasRichTextTokens.Newline;
+	type: TokenType.Newline;
 }
 
-export type CanvasRichTextToken = TextToken | NewlineToken;
+export type Token = TextToken | NewlineToken;

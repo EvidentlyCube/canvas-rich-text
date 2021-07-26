@@ -9,8 +9,19 @@ const matchRegex = /(<.+?>|\s+|[^<\s]+)/g;
 const matchHtmlTag = /<(\/?[a-zA-Z0-9]+)(.*?)>/;
 const matchHtmlAttributes = /(\S+)="(.+?)"/g;
 
+function matchAll(text: string, regex: RegExp) {
+	regex.lastIndex = -1;
+	let match;
+	const matches = [];
+	while (match = regex.exec(text)) {
+		matches.push(match);
+	}
+
+	return matches;
+}
+
 export function htmlSplitString(text: string): HtmlToken[] {
-	return Array.from(text.matchAll(matchRegex))
+	return matchAll(text, matchRegex)
 		.map(match => match[0])
 		.filter(match => match.trim().length > 0)
 		.reduce((tags:HtmlToken[], match) => {
@@ -27,7 +38,7 @@ export function htmlSplitString(text: string): HtmlToken[] {
 					});
 					return tags;
 				}
-				const attributes = Array.from(attributesText.matchAll(matchHtmlAttributes))
+				const attributes = Array.from(matchAll(attributesText, matchHtmlAttributes))
 					.reduce((attrs:Record<string, string>, match) => {
 						attrs[match[1]] = match[2];
 						return attrs;

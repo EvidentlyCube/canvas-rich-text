@@ -1,15 +1,10 @@
-import {CanvasRichTextToken} from "../Token";
 import {htmlSplitString} from "./htmlSplitString";
-import {CanvasRichTextTokens} from "../common";
-import {RichTextRenderer} from "../RichTextRenderer";
 import {StyleOptions} from "../StyleOptions";
-import {CanvasRichText} from "../CanvasRichText";
-import {cleanupStyleOption} from "../helpers/CleanupStyleOption";
-
-interface TokenizeElement {
-	tag: string;
-	style: StyleOptions;
-}
+import {defaultStyle} from "../CanvasRichText";
+import {TokenizeElement} from "./interfaces";
+import {extractStylesFromAttributes} from "./extractStylesFromAttributes";
+import {measureText} from "../rendering/measureText";
+import {Token, TokenType} from "../Token";
 
 export interface HtmlTokenizerOptions {
 	blockTags: string[];
@@ -18,30 +13,8 @@ export interface HtmlTokenizerOptions {
 	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
 }
 
-function extractStylesFromAttributes(attributes: Record<string, string>, attributeToStyleMap: Record<string, keyof StyleOptions>) {
-	const result: Partial<StyleOptions> = {};
-
-	for (const attribute in attributes) {
-		if (!attributes.hasOwnProperty(attribute)) {
-			continue;
-		}
-
-		const attributeLC = attribute.toLowerCase();
-		if (attributeToStyleMap.hasOwnProperty(attributeLC)) {
-			const attributeName = attributeToStyleMap[attributeLC];
-			const value = cleanupStyleOption(attributeName, attributes[attribute]);
-			if (value !== undefined) {
-				// Casting to any to avoid painful type juggling. We trust `cleanupStyleOption` returns correct
-				result[attributeName] = value as any;
-			}
-		}
-	}
-
-	return result;
-}
-
 export const HtmlTokenizer = {
-	get defaultHtmlTokenizerOptions(): HtmlTokenizerOptions {
+	createOptions(): HtmlTokenizerOptions {
 		return {
 			blockTags: ['p', 'div', 'br'],
 			tagDefaultStyles: {
@@ -50,7 +23,7 @@ export const HtmlTokenizer = {
 				'i': {fontStyle: 'italic'},
 				'em': {fontStyle: 'italic'},
 			},
-			defaultStyles: CanvasRichText.defaultStyle,
+			defaultStyles: defaultStyle,
 			attributeToStyleMap: {
 				fontsize: 'fontSize',
 				size: 'fontSize',
@@ -64,20 +37,20 @@ export const HtmlTokenizer = {
 				family: 'fontFamily',
 				fontstretch: 'fontStretch',
 				stretch: 'fontStretch',
-				color: 'color'
+				color: 'color',
 			},
 		};
 	},
 
-	tokenizeString(text: string, options?: HtmlTokenizerOptions): CanvasRichTextToken[] {
-		options = options ?? HtmlTokenizer.defaultHtmlTokenizerOptions;
-		const tokens: CanvasRichTextToken[] = [];
+	tokenizeString(text: string, options?: HtmlTokenizerOptions): Token[] {
+		options = options ?? HtmlTokenizer.createOptions();
+		const tokens: Token[] = [];
 		const stylesStack: TokenizeElement[] = [];
 
 		let currentElement: TokenizeElement = {
 			tag: 'body',
 			style: {
-				...options.defaultStyles
+				...options.defaultStyles,
 			},
 		};
 
@@ -85,13 +58,13 @@ export const HtmlTokenizer = {
 			// Text token
 			if (typeof htmlToken.text !== 'undefined') {
 				const style: StyleOptions = {
-					...currentElement.style
+					...currentElement.style,
 				};
 
 				tokens.push({
-					type: CanvasRichTextTokens.Text,
+					type: TokenType.Text,
 					text: htmlToken.text,
-					metrics: RichTextRenderer.measureText(htmlToken.text, style),
+					metrics: measureText(htmlToken.text, style),
 					style,
 				});
 
@@ -110,7 +83,7 @@ export const HtmlTokenizer = {
 			} else {
 				// Close tag
 				if (options.blockTags.indexOf(currentElement.tag) !== -1) {
-					tokens.push({type: CanvasRichTextTokens.Newline});
+					tokens.push({type: TokenType.Newline});
 				}
 
 				currentElement = stylesStack.pop()!;

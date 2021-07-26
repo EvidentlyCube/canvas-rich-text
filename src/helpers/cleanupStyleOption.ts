@@ -1,5 +1,4 @@
-import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights} from "../common";
-import {StyleOptions} from "../StyleOptions";
+import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights, StyleOptions} from "../StyleOptions";
 
 // Checks if the format is [+/-]<number>[.<number>][px]
 const validateSizeNumber = /^[+]?[0-9]+(?:[.][0-9]+)?(?:px)?$/;
@@ -48,8 +47,8 @@ function isValidColor(color: string) {
 }
 
 export const __isValidColor = {
-	callback: () => false
-}
+	callback: () => false,
+};
 
 export function cleanupStyleOption<T extends keyof StyleOptions>(
 	field: T,
