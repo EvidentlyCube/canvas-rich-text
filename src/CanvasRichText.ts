@@ -2,6 +2,7 @@ import {StyleOptions} from "./StyleOptions";
 
 export const CanvasRichText = {
 	defaultStyle: {
+		color: 'black',
 		fontSize: '14px',
 		fontStyle: 'normal',
 		fontVariant: [],
