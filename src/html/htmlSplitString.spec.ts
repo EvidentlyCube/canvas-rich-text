@@ -2,7 +2,7 @@ import { assert } from "chai";
 import { describe, it } from 'mocha';
 import {HtmlToken, htmlSplitString} from "./htmlSplitString";
 
-describe("htmlhtmlSplitString", () => {
+describe("htmlSplitString", () => {
 	it("No html tags", () => {
 		const tags = htmlSplitString('Some text');
 

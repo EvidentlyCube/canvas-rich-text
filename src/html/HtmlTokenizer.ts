@@ -2,11 +2,13 @@ import {CanvasRichTextToken} from "../Token";
 import {htmlSplitString} from "./htmlSplitString";
 import {CanvasRichTextTokens} from "../common";
 import {RichTextRenderer} from "../RichTextRenderer";
-import {cleanupStyleOption, StyleOptions} from "../StyleOptions";
+import {StyleOptions} from "../StyleOptions";
+import {CanvasRichText} from "../CanvasRichText";
+import {cleanupStyleOption} from "../helpers/CleanupStyleOption";
 
 interface TokenizeElement {
 	tag: string;
-	options: StyleOptions;
+	style: StyleOptions;
 }
 
 export interface HtmlTokenizerOptions {
@@ -43,19 +45,25 @@ export const HtmlTokenizer = {
 		return {
 			blockTags: ['p', 'div', 'br'],
 			tagDefaultStyles: {
-				'b': {},
+				'b': {fontWeight: 'bold'},
+				'strong': {fontWeight: 'bold'},
+				'i': {fontStyle: 'italic'},
+				'em': {fontStyle: 'italic'},
 			},
-			defaultStyles: {
-				fontSize: '14',
-				fontFamily: 'Arial',
-				fontStretch: 'normal',
-				fontStyle: 'normal',
-				fontVariant: [],
-				fontWeight: "normal"
-			},
+			defaultStyles: CanvasRichText.defaultStyle,
 			attributeToStyleMap: {
 				fontsize: 'fontSize',
 				size: 'fontSize',
+				fontstyle: 'fontStyle',
+				style: 'fontStyle',
+				fontweight: 'fontWeight',
+				weight: 'fontWeight',
+				fontvariant: "fontVariant",
+				variant: 'fontVariant',
+				fontfamily: 'fontFamily',
+				family: 'fontFamily',
+				fontstretch: 'fontStretch',
+				stretch: 'fontStretch'
 			},
 		};
 	},
@@ -67,7 +75,7 @@ export const HtmlTokenizer = {
 
 		let currentElement: TokenizeElement = {
 			tag: 'body',
-			options: {
+			style: {
 				...options.defaultStyles
 			},
 		};
@@ -76,7 +84,7 @@ export const HtmlTokenizer = {
 			// Text token
 			if (typeof htmlToken.text !== 'undefined') {
 				const style: StyleOptions = {
-					...currentElement.options
+					...currentElement.style
 				};
 
 				tokens.push({
@@ -86,13 +94,15 @@ export const HtmlTokenizer = {
 					style,
 				});
 
-			} else if (typeof htmlToken.style !== 'undefined') {
+			} else if (typeof htmlToken.style !== 'undefined' && typeof htmlToken.tag !== 'undefined') {
 				// Open tag
+				const tagStyle = options.tagDefaultStyles[htmlToken.tag] ?? {};
 				stylesStack.push(currentElement);
 				currentElement = {
-					tag: htmlToken.tag!,
-					options: {
-						...currentElement.options,
+					tag: htmlToken.tag,
+					style: {
+						...currentElement.style,
+						...tagStyle,
 						...extractStylesFromAttributes(htmlToken.style, options.attributeToStyleMap),
 					},
 				};
