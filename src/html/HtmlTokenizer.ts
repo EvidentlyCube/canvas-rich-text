@@ -7,14 +7,42 @@ import {measureText} from "../rendering/measureText";
 import {Token, TokenType} from "../Token";
 import {decodeHtmlEntities} from "./decodeHtmlEntities";
 
+/**
+ * HTML Tokenization options.
+ */
 export interface HtmlTokenizerOptions {
+	/**
+	 * An array of HTML tag names (must be lowercase) that will have an end line inserted when they are closed.
+	 * Defaults to: p, div and br.
+	 *
+	 * @remarks
+	 * `<br/>` tag must **always** be closed.
+	 */
 	blockTags: string[];
+	/**
+	 * Default style options to use for text with no custom styling.
+	 */
 	defaultStyles: StyleOptions;
+	/**
+	 * A mapping between an attribute name (lowercase) and a style it sets.
+	 * By default these attributes are supported:
+	 * `fontsize`, `size`, `fontstyle`, `style`, `fontweight`, `weight`,
+	 * `fontvariant`, `variant`, `fontfamily`, `family`,
+	 * `fontstretch`, `stretch`, `color`
+	 */
 	attributeToStyleMap: Record<string, keyof StyleOptions>;
+	/**
+	 * A maping between a tag name (lowercase) and its default styles.
+	 * By default these tags have styles:
+	 * `b`, `strong`, `i` and `em`.
+	 */
 	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
 }
 
 export const HtmlTokenizer = {
+	/**
+	 * Creates new HTML tokenization options, filled with the default values.
+	 */
 	createOptions(): HtmlTokenizerOptions {
 		return {
 			blockTags: ['p', 'div', 'br'],
@@ -43,6 +71,12 @@ export const HtmlTokenizer = {
 		};
 	},
 
+	/**
+	 * Converts an HTML string into tokens.
+	 * @param text The text to convert
+	 * @param options Optional tokenization options. When not provided it uses the options
+	 * as returned by [[createOptions]].
+	 */
 	tokenizeString(text: string, options?: HtmlTokenizerOptions): Token[] {
 		options = options ?? HtmlTokenizer.createOptions();
 		const tokens: Token[] = [];

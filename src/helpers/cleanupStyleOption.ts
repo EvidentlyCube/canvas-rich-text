@@ -47,7 +47,7 @@ function isValidColor(color: string) {
 }
 
 export const __isValidColor = {
-	callback: () => false,
+	callback: (): boolean => false,
 };
 
 export function cleanupStyleOption<T extends keyof StyleOptions>(

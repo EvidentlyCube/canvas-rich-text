@@ -8,7 +8,7 @@ let lastError = {
 	value: "",
 	error: "",
 };
-let errorCallback = (field: string, value: string, error: string) => lastError = {field, value, error};
+const errorCallback = (field: string, value: string, error: string) => lastError = {field, value, error};
 
 describe("cleanupStyleOption", () => {
 	describe('fontSize', () => {
@@ -145,8 +145,8 @@ describe("cleanupStyleOption", () => {
 			__isValidColor.callback = () => true;
 
 			validCssColorNames.forEach(color => {
-				assert.equal(cleanupStyleOption("color", color), color)
-			})
+				assert.equal(cleanupStyleOption("color", color), color);
+			});
 		});
 		it('Valid color spaces', () => {
 			__isValidColor.callback = () => true;
@@ -171,47 +171,28 @@ describe("cleanupStyleOption", () => {
 			];
 
 			values.forEach(color => {
-				assert.equal(cleanupStyleOption("color", color), color)
-			})
+				assert.equal(cleanupStyleOption("color", color), color);
+			});
 		});
 		it('Invalid color spaces', () => {
 			__isValidColor.callback = () => false;
 
-			const values = [
-				'#0003',
-				'#FFFlol',
-				'#f0f0f022',
-				'#00text',
-				'rgb(0, 0, 0, 0)',
-				'rgb(256, 2, 8)',
-				'rgba(0, 0, 0)',
-				'rgba(1, 2, 8, 1.5)',
-				'rgba(255, 255, 255, -1)',
-				'hsl(0, -50%, 100%)',
-				'hsl(-213, 50%, 500%)',
-				'hsla(0, 0%, 100%, 0, 0)',
-				'hsla(-213, 50%, 50%, -5)',
-				'hsla(3435, 100%, 0%, 10)',
-			];
+			assert.equal(cleanupStyleOption("color", '#0033', errorCallback), undefined);
+			assertError('color', '#0033', "'#0033' is not a valid hex color");
+			assert.equal(cleanupStyleOption("color", '#00text', errorCallback), undefined);
+			assertError('color', '#00text', "'#00text' is not a valid hex color");
 
-			values.forEach(color => {
-				assert.equal(cleanupStyleOption("color", '#0033', errorCallback), undefined);
-				assertError('color', '#0033', "'#0033' is not a valid hex color");
-				assert.equal(cleanupStyleOption("color", '#00text', errorCallback), undefined);
-				assertError('color', '#00text', "'#00text' is not a valid hex color");
+			assert.equal(cleanupStyleOption("color", 'rgb(256,256,256)', errorCallback), undefined);
+			assertError('color', 'rgb(256,256,256)', "'rgb(256,256,256)' is not a valid RGB color");
 
-				assert.equal(cleanupStyleOption("color", 'rgb(256,256,256)', errorCallback), undefined);
-				assertError('color', 'rgb(256,256,256)', "'rgb(256,256,256)' is not a valid RGB color");
+			assert.equal(cleanupStyleOption("color", 'rgba(1, 1, 1)', errorCallback), undefined);
+			assertError('color', 'rgba(1, 1, 1)', "'rgba(1, 1, 1)' is not a valid RGBA color");
 
-				assert.equal(cleanupStyleOption("color", 'rgba(1, 1, 1)', errorCallback), undefined);
-				assertError('color', 'rgba(1, 1, 1)', "'rgba(1, 1, 1)' is not a valid RGBA color");
+			assert.equal(cleanupStyleOption("color", 'hsl(0, 200%, 50%)', errorCallback), undefined);
+			assertError('color', 'hsl(0, 200%, 50%)', "'hsl(0, 200%, 50%)' is not a valid HSL color");
 
-				assert.equal(cleanupStyleOption("color", 'hsl(0, 200%, 50%)', errorCallback), undefined);
-				assertError('color', 'hsl(0, 200%, 50%)', "'hsl(0, 200%, 50%)' is not a valid HSL color");
-
-				assert.equal(cleanupStyleOption("color", 'hsla(0, 50%, 50%, 3)', errorCallback), undefined);
-				assertError('color', 'hsla(0, 50%, 50%, 3)', "'hsla(0, 50%, 50%, 3)' is not a valid HSLA color");
-			})
+			assert.equal(cleanupStyleOption("color", 'hsla(0, 50%, 50%, 3)', errorCallback), undefined);
+			assertError('color', 'hsla(0, 50%, 50%, 3)', "'hsla(0, 50%, 50%, 3)' is not a valid HSLA color");
 		});
 	});
 });

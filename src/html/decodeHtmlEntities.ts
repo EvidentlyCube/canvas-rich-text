@@ -246,7 +246,7 @@ const entities = new Map<string, number>([
 
 const matchEntityRegex = /&([^#].+?|#\d+);/g;
 
-export function decodeHtmlEntities(str: string) {
+export function decodeHtmlEntities(str: string): string {
 	return str.replace(matchEntityRegex, (_, match) => {
 		const entity = entities.get(match.toLowerCase());
 		if (entity) {

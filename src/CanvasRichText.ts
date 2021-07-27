@@ -4,30 +4,61 @@ import {configureCanvas} from "./rendering/configureCanvas";
 import {arrangeLine} from "./rendering/arrangeLine";
 import {groupIntoLines} from "./rendering/groupIntoLines";
 
+/**
+ * Options for arranging a tokenized text.
+ */
 export interface ArrangeOptions {
-	width: number;
+	/**
+	 * Maximum width of the text in pixels.
+	 *
+	 * @remarks
+	 * If a single word is longer than this it won't be broken and can possibly be larger than expected.
+	 * Check [[ArrangedText.width]] returned from [[arrangeText]] to see if it's equal or smaller than
+	 * the word wrap width you provided.
+	 */
+	wordWrapWidth: number;
+
+	/**
+	 * The width of the space between words, in pixels.
+	 */
 	spaceWidth: number;
+
+	/**
+	 * The height of the soace between lines, in pixels.
+	 */
 	lineSpacing: number;
 }
 
-export interface RichTextRenderPoint {
+/**
+ * A text token arranged for rendering.
+ */
+export interface ArrangedWord {
 	x: number;
 	y: number;
 	token: TextToken;
 }
 
-export interface RichTextRenderLine {
-	right: number;
-	bottom: number;
-	points: RichTextRenderPoint[];
-}
-
-export interface RichTextArrangedText {
+/**
+ * A line of arranged words, for rendering.
+ */
+export interface ArrangedLine {
 	width: number;
 	height: number;
-	lines: RichTextRenderLine[];
+	words: ArrangedWord[];
 }
 
+/**
+ * A text arranged for rendering.
+ */
+export interface ArrangedText {
+	width: number;
+	height: number;
+	lines: ArrangedLine[];
+}
+
+/**
+ * The default style. You can modify this to affect how the text will be rendered.
+ */
 export const defaultStyle: StyleOptions = {
 	color: 'black',
 	fontSize: '14px',
@@ -38,42 +69,62 @@ export const defaultStyle: StyleOptions = {
 	fontFamily: 'arial, sans-serif',
 };
 
-export function arrangeText(tokens: Token[], options: Partial<ArrangeOptions>): RichTextArrangedText {
+/**
+ * Arranges Tokens into a randerable text.
+ * @param tokens An array of tokens for arranging, at the moment you either have to craft it manually or
+ * use [[tokenizeString]] to convert an HTML-string to an array of tokens.
+ * @param options Arranging options.
+ */
+export function arrangeText(tokens: Token[], options: Partial<ArrangeOptions>): ArrangedText {
 	const opts: ArrangeOptions = {
-		width: Number.MAX_SAFE_INTEGER,
+		wordWrapWidth: Number.MAX_SAFE_INTEGER,
 		lineSpacing: 4,
 		spaceWidth: 4,
 		...options,
 	};
 
 	const lines = groupIntoLines(tokens, opts);
-	const richLines: RichTextRenderLine[] = [];
+	const richLines: ArrangedLine[] = [];
 	let nextLineY = 0;
 	for (const line of lines) {
 		const richLine = arrangeLine(nextLineY, line, opts);
-		nextLineY = richLine.bottom + opts.lineSpacing;
+		nextLineY = richLine.height + opts.lineSpacing;
 		richLines.push(richLine);
 	}
 
 	return {
 		lines: richLines,
 		width: richLines.reduce((maxRight, x) => {
-			return Math.max(maxRight, x.right);
+			return Math.max(maxRight, x.width);
 		}, 0),
 		height: richLines.reduce((maxBottom, x) => {
-			return Math.max(maxBottom, x.bottom);
+			return Math.max(maxBottom, x.height);
 		}, 0) - opts.lineSpacing,
 	};
 }
 
-export function renderLine(line: RichTextRenderLine, target: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
-	for (const point of line.points) {
+/**
+ * Renders a single arranged line at the specified position
+ * @param line The line to render
+ * @param target Canvas context on which to render
+ * @param x X position of the line
+ * @param y Y position of the line
+ */
+export function renderLine(line: ArrangedLine, target: CanvasRenderingContext2D, x = 0, y = 0): void {
+	for (const point of line.words) {
 		configureCanvas(point.token.style, target);
 		target.fillText(point.token.text, point.x + x, point.y + y);
 	}
 }
 
-export function renderArrangedText(arrangedText: RichTextArrangedText, target: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
+/**
+ * Renders the whole arranged text at the specified position.
+ * @param arrangedText The arranged text to render.
+ * @param target Canvas context on which to render
+ * @param x X position of the text in the canvas
+ * @param y Y position of the text in the canvas
+ */
+export function renderArrangedText(arrangedText: ArrangedText, target: CanvasRenderingContext2D, x = 0, y = 0): void {
 	for (const line of arrangedText.lines) {
 		renderLine(line, target, x, y);
 	}

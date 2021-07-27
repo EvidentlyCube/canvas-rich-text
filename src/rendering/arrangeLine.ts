@@ -1,5 +1,5 @@
 import {TextToken} from "../Token";
-import {ArrangeOptions, RichTextRenderLine} from "../CanvasRichText";
+import {ArrangeOptions, ArrangedLine} from "../CanvasRichText";
 
 const getMaxAscent = (line: TextToken[]) => {
 	return line.reduce((max, token) => Math.max(max, token.metrics.actualBoundingBoxAscent), 0);
@@ -9,7 +9,7 @@ const getMinAscent = (line: TextToken[]) => {
 	return line.reduce((max, token) => Math.max(max, token.metrics.actualBoundingBoxDescent), 0);
 };
 
-export function arrangeLine(y: number, line: TextToken[], opts: ArrangeOptions): RichTextRenderLine {
+export function arrangeLine(y: number, line: TextToken[], opts: ArrangeOptions): ArrangedLine {
 	const maxAscent = getMaxAscent(line);
 	const maxDescent = getMinAscent(line);
 
@@ -25,8 +25,8 @@ export function arrangeLine(y: number, line: TextToken[], opts: ArrangeOptions):
 	});
 
 	return {
-		right: lastTokenRight,
-		bottom: y + maxDescent + maxAscent,
-		points,
+		width: lastTokenRight,
+		height: y + maxDescent + maxAscent,
+		words: points,
 	};
 }

@@ -1,7 +1,7 @@
 import {ArrangeOptions} from "../CanvasRichText";
 import {TextToken, Token, TokenType} from "../Token";
 
-export function groupIntoLines(tokens: Token[], options: ArrangeOptions) {
+export function groupIntoLines(tokens: Token[], options: ArrangeOptions): TextToken[][] {
 	const lines: TextToken[][] = [];
 	let nextLine: TextToken[] = [];
 
@@ -18,7 +18,7 @@ export function groupIntoLines(tokens: Token[], options: ArrangeOptions) {
 		if (nextLine.length === 0) {
 			nextLine.push(token);
 			nextX = token.metrics.width;
-		} else if (nextX + options.spaceWidth + tokenWidth > options.width) {
+		} else if (nextX + options.spaceWidth + tokenWidth > options.wordWrapWidth) {
 			lines.push(nextLine);
 			nextLine = [];
 			nextLine.push(token);

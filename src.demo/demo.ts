@@ -79,7 +79,7 @@ function redraw() {
 	const drawY = parseInt(getInput('draw-y'));
 	const tokens = CanvasRichText.HtmlTokenizer.tokenizeString(textarea.value);
 	const arrangedText = CanvasRichText.arrangeText(tokens, {
-		width: wrapWidth,
+		wordWrapWidth: wrapWidth,
 		spaceWidth: parseInt(getInput('space-width')),
 		lineSpacing: parseInt(getInput('line-spacing')),
 	});

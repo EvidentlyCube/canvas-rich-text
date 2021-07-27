@@ -7,14 +7,14 @@ export type FontStyles = 'normal' | 'italic';
 export type FontWeights = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold' | 'lighter' | 'bolder';
 export type FontVariants = 'normal' | 'small-caps';
 export type FontStretches = 'ultra-condensed'
-	| 'extra-condensed'
-	| 'condensed'
-	| 'semi-condensed'
-	| 'normal'
-	| 'semi-expanded'
-	| 'expanded'
-	| 'extra-expanded'
-	| 'ultra-expanded';
+| 'extra-condensed'
+| 'condensed'
+| 'semi-condensed'
+| 'normal'
+| 'semi-expanded'
+| 'expanded'
+| 'extra-expanded'
+| 'ultra-expanded';
 
 export interface StyleOptions {
 	color: string;
