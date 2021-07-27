@@ -1,6 +1,7 @@
 {
     "name": "canvas-rich-text",
-    "version": "0.0.2",
+    "version": "1.0.0",
+    "description": "Library for drawing rich text in Canvas without using SVG's foreignObject.",
     "main": "dist/index.js",
     "files": [
         "dist"
@@ -8,8 +9,6 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "clean": "rm -rf dist demo",
-        "dev": "vite",
-        "serve": "vite preview",
         "build": "tsc",
         "build:demo": "vite build --outDir ../docs/demo --base ./ --emptyOutDir src.demo",
         "docs": "typedoc --options typedoc.ts",

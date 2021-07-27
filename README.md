@@ -27,16 +27,16 @@ The full documentation can be found [here](https://evidentlycube.github.io/canva
 The library can be used like this:
 
 ```
-import {arrangeText, HtmlTokenizer} from '../src/index';
+import {arrangeText, renderArrangedText, HtmlTokenizer} from 'canvas-rich-text';
 
 const text = `<p>Paragraph <strong>bold</strong> <em>italic</em></p>`;
 const tokens = HtmlTokenizer.tokenizeString(text);
-const arrangedText = CanvasRichText.arrangeText(tokens, {
-    width: 300,
+const arrangedText = arrangeText(tokens, {
+    wordWrapWidth: 300,
     spaceWidth: 8,
     lineSpacing: 5
 });
-CanvasRichText.renderArrangedText(arrangedText, canvas, 0, 0);
+renderArrangedText(arrangedText, canvas, 0, 0);
 ```   
 
 ## Details
