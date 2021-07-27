@@ -5,6 +5,7 @@ import {TokenizeElement} from "./interfaces";
 import {extractStylesFromAttributes} from "./extractStylesFromAttributes";
 import {measureText} from "../rendering/measureText";
 import {Token, TokenType} from "../Token";
+import {decodeHtmlEntities} from "./decodeHtmlEntities";
 
 export interface HtmlTokenizerOptions {
 	blockTags: string[];
@@ -61,10 +62,11 @@ export const HtmlTokenizer = {
 					...currentElement.style,
 				};
 
+				const text = decodeHtmlEntities(htmlToken.text);
 				tokens.push({
 					type: TokenType.Text,
-					text: htmlToken.text,
-					metrics: measureText(htmlToken.text, style),
+					text: text,
+					metrics: measureText(text, style),
 					style,
 				});
 
@@ -86,7 +88,9 @@ export const HtmlTokenizer = {
 					tokens.push({type: TokenType.Newline});
 				}
 
-				currentElement = stylesStack.pop()!;
+				if (stylesStack.length > 0) {
+					currentElement = stylesStack.pop()!;
+				}
 			}
 		}
 

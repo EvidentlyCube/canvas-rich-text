@@ -1,5 +1,5 @@
 import {StyleOptions} from "./StyleOptions";
-import {Token, TextToken} from "./Token";
+import {TextToken, Token} from "./Token";
 import {configureCanvas} from "./rendering/configureCanvas";
 import {arrangeLine} from "./rendering/arrangeLine";
 import {groupIntoLines} from "./rendering/groupIntoLines";
@@ -8,7 +8,6 @@ export interface ArrangeOptions {
 	width: number;
 	spaceWidth: number;
 	lineSpacing: number;
-	pixelPerfect: boolean;
 }
 
 export interface RichTextRenderPoint {
@@ -18,26 +17,32 @@ export interface RichTextRenderPoint {
 }
 
 export interface RichTextRenderLine {
+	right: number;
 	bottom: number;
 	points: RichTextRenderPoint[];
+}
+
+export interface RichTextArrangedText {
+	width: number;
+	height: number;
+	lines: RichTextRenderLine[];
 }
 
 export const defaultStyle: StyleOptions = {
 	color: 'black',
 	fontSize: '14px',
 	fontStyle: 'normal',
-	fontVariant: [],
+	fontVariant: 'normal',
 	fontWeight: 'normal',
 	fontStretch: 'normal',
 	fontFamily: 'arial, sans-serif',
 };
 
-export function arrangeText(tokens: Token[], options: Partial<ArrangeOptions>): RichTextRenderLine[] {
+export function arrangeText(tokens: Token[], options: Partial<ArrangeOptions>): RichTextArrangedText {
 	const opts: ArrangeOptions = {
 		width: Number.MAX_SAFE_INTEGER,
 		lineSpacing: 4,
 		spaceWidth: 4,
-		pixelPerfect: false,
 		...options,
 	};
 
@@ -50,7 +55,15 @@ export function arrangeText(tokens: Token[], options: Partial<ArrangeOptions>): 
 		richLines.push(richLine);
 	}
 
-	return richLines;
+	return {
+		lines: richLines,
+		width: richLines.reduce((maxRight, x) => {
+			return Math.max(maxRight, x.right);
+		}, 0),
+		height: richLines.reduce((maxBottom, x) => {
+			return Math.max(maxBottom, x.bottom);
+		}, 0) - opts.lineSpacing,
+	};
 }
 
 export function renderLine(line: RichTextRenderLine, target: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
@@ -60,8 +73,8 @@ export function renderLine(line: RichTextRenderLine, target: CanvasRenderingCont
 	}
 }
 
-export function renderLines(lines: RichTextRenderLine[], target: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
-	for (const line of lines) {
+export function renderArrangedText(arrangedText: RichTextArrangedText, target: CanvasRenderingContext2D, x: number = 0, y: number = 0) {
+	for (const line of arrangedText.lines) {
 		renderLine(line, target, x, y);
 	}
 }

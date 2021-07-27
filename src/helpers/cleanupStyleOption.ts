@@ -54,7 +54,7 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 	field: T,
 	value: string,
 	errorCallback?: CleanupStyleWarningCallback,
-): string | string[] | undefined {
+): string | undefined {
 	switch (field) {
 		case "color":
 			if (validCssColorNames.has(value.toLowerCase())) {
@@ -141,27 +141,12 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 			return value;
 
 		case "fontVariant":
-			const bits = value.split(' ')
-				.reduce((values, val) => {
-					if (!AllowedVariants.has(val.toLowerCase())) {
-						errorCallback?.(field, value, `'${val}' is not a valid fontVariant value and it was removed`);
-
-					} else if (values.has(val)) {
-						errorCallback?.(field, value, `'${val}' has appeared multiple times in fontVariant`);
-
-					} else {
-						values.add(val);
-					}
-
-					return values;
-				}, new Set<string>());
-
-			if (bits.size === 0) {
-				errorCallback?.(field, value, `No valid fontVariant value remained`);
+			if (!AllowedVariants.has(value.toLowerCase())) {
+				errorCallback?.(field, value, `'${value}' is not a valid fontVariant value`);
 				return undefined;
 			}
 
-			return Array.from(bits);
+			return value;
 
 		case "fontStretch":
 			if (!AllowedStretches.has(value.toLowerCase())) {

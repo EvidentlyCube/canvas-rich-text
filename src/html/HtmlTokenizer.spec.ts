@@ -74,6 +74,12 @@ describe("HtmlTokenizer", () => {
 			assertText(result[0], 'bold', {fontWeight: 'bold'});
 			assertText(result[1], 'italic', {fontStyle: 'italic'});
 		});
+		it('Decode HTML entities', () => {
+			const result = HtmlTokenizer.tokenizeString('&lt;&rfloor;&#220;&invaliD;&#Ff;');
+			assert.lengthOf(result, 1);
+
+			assertText(result[0], '<⌋Ü&invaliD;&#Ff;');
+		});
 	});
 	describe(`Style specificality`, () => {
 		it('parent > default', () => {

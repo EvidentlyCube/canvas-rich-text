@@ -1,5 +1,3 @@
-import './style.css'
-
 import * as CanvasRichText from './index';
 
 const app = document.querySelector<HTMLDivElement>('#app')!
@@ -27,13 +25,12 @@ app.appendChild(canvas);
 redraw();
 function redraw() {
 	const tokens = CanvasRichText.HtmlTokenizer.tokenizeString(input.value);
-	console.log(tokens);
 	const lines = CanvasRichText.arrangeText(tokens, {
 		width: 2500
 	});
 
 	context.clearRect(0, 0, 500, 500);
-	CanvasRichText.renderLines(lines, context, 0, 50);
+	CanvasRichText.renderArrangedText(lines, context, 0, 50);
 
 	const line = (color: string, y: number) => {
 		context.fillStyle = color;

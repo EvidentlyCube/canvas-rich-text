@@ -13,15 +13,20 @@ export function arrangeLine(y: number, line: TextToken[], opts: ArrangeOptions):
 	const maxAscent = getMaxAscent(line);
 	const maxDescent = getMinAscent(line);
 
-	let nextX = 0;
+	let lastTokenRight = 0;
+	const points = line.map(token => {
+		const x = lastTokenRight + (lastTokenRight > 0 ? opts.spaceWidth : 0);
+		lastTokenRight = x + token.metrics.width;
+		return {
+			token,
+			x,
+			y: y + maxAscent,
+		};
+	});
+
 	return {
+		right: lastTokenRight,
 		bottom: y + maxDescent + maxAscent,
-		points: line.map(token => {
-			const x = nextX + opts.spaceWidth;
-			nextX = x + token.metrics.width;
-			return {
-				x, token, y: y + maxAscent,// + token.metrics.actualBoundingBoxAscent
-			};
-		}),
+		points,
 	};
 }

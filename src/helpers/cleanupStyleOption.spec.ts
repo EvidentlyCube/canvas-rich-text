@@ -121,43 +121,22 @@ describe("cleanupStyleOption", () => {
 	});
 
 	describe("fontVariant", () => {
-		describe("Single values", () => {
-			Array.from(AllowedVariants.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
-				assert.deepEqual(cleanupStyleOption("fontVariant", style), [style]);
-				assert.deepEqual(cleanupStyleOption("fontVariant", style.toLowerCase()), [style.toLowerCase()]);
-				assert.deepEqual(cleanupStyleOption("fontVariant", style.toUpperCase()), [style.toUpperCase()]);
+		Array.from(AllowedVariants.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
+			assert.deepEqual(cleanupStyleOption("fontVariant", style), style);
+			assert.deepEqual(cleanupStyleOption("fontVariant", style.toLowerCase()), style.toLowerCase());
+			assert.deepEqual(cleanupStyleOption("fontVariant", style.toUpperCase()), style.toUpperCase());
+		}));
+
+		describe("Other variant values are invalid and return undefined, also call error callback", () => {
+			const testValues = Array.from(AllowedVariants.values()).map(x => x + '-invalid').concat([
+				'',
+				' ',
+				'invalid',
+			]);
+			testValues.forEach(style => it(`'${style}'`, () => {
+				assert.equal(cleanupStyleOption("fontVariant", style, errorCallback), undefined);
+				assertError("fontVariant", style, `'${style}' is not a valid fontVariant value`);
 			}));
-		});
-		describe("Multiple values", () => {
-			Array.from(AllowedVariants.values()).forEach(style1 => {
-				Array.from(AllowedVariants.values()).forEach(style2 => {
-					if (style1 === style2) {
-						return; // Multiple identical values are handled somewhere else
-					}
-
-					it(`'${style1} ${style2}' is a valid value in all letter cases`, () => {
-						assert.deepEqual(cleanupStyleOption("fontVariant", `${style1} ${style2}`), [style1, style2]);
-						assert.deepEqual(cleanupStyleOption("fontVariant", `${style1} ${style2}`.toLowerCase()), [style1.toLowerCase(), style2.toLowerCase()]);
-						assert.deepEqual(cleanupStyleOption("fontVariant", `${style1} ${style2}`.toUpperCase()), [style1.toUpperCase(), style2.toUpperCase()]);
-					});
-				});
-			});
-		});
-		describe("Errors and invalid values", () => {
-			it("Multiple identical values are removed and reported", () => {
-				assert.deepEqual(cleanupStyleOption("fontVariant", `small-caps small-caps`, errorCallback), ['small-caps']);
-				assertError('fontVariant', 'small-caps small-caps', "'small-caps' has appeared multiple times in fontVariant");
-			});
-
-			it("Invalid values are removed and reported", () => {
-				assert.deepEqual(cleanupStyleOption("fontVariant", `small-caps invalid`, errorCallback), ['small-caps']);
-				assertError('fontVariant', 'small-caps invalid', "'invalid' is not a valid fontVariant value and it was removed");
-			})
-
-			it("Invalid values are removed and reported", () => {
-				assert.deepEqual(cleanupStyleOption("fontVariant", `wrong invalid`, errorCallback), undefined);
-				assertError('fontVariant', 'wrong invalid', "No valid fontVariant value remained");
-			});
 		});
 	});
 

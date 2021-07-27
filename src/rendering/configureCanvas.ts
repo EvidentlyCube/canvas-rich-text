@@ -1,7 +1,9 @@
 import {StyleOptions} from "../StyleOptions";
 
 export function configureCanvas(style: StyleOptions, target: CanvasRenderingContext2D) {
-	target.font = `${style.fontStyle} ${style.fontVariant.join(' ')} ${style.fontWeight} ${style.fontStretch} ${style.fontSize} ${style.fontFamily}`;
+	const font = `${style.fontStyle} ${style.fontVariant} ${style.fontWeight} ${style.fontStretch} ${style.fontSize} ${style.fontFamily}`
+		.replace(/normal /g, '');
+	target.font = font;
 	target.textBaseline = 'alphabetic';
 	target.fillStyle = style.color;
 }

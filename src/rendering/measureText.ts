@@ -13,5 +13,6 @@ export function measureText(text: string, style: StyleOptions): TextMetrics {
 
 	configureCanvas(style, canvasContext);
 
+	console.log(text);
 	return canvasContext.measureText(text);
 }
