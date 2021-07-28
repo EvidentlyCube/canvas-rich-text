@@ -42,9 +42,9 @@ export interface HtmlTokenizerOptions {
 	 *  - `space` will replace them with a space
 	 *  - `br` will replace them with a `<br/>` tag
 	 *
-	 *  @remark Windows-style newlines (`\r\n`) are always replaced into a single `\n` tag.
+	 *  @remark Windows-style newlines (`\r\n`) are always replaced with a single `\n` tag.
 	 */
-	newlineBehavior: 'space'|'br';
+	newlineBehavior?: 'space'|'br';
 }
 
 export const HtmlTokenizer = {

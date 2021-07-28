@@ -1,6 +1,6 @@
 {
     "name": "canvas-rich-text",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Library for drawing rich text in Canvas without using SVG's foreignObject.",
     "main": "dist/index.js",
     "files": [
