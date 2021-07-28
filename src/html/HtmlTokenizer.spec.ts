@@ -80,6 +80,37 @@ describe("HtmlTokenizer", () => {
 
 			assertText(result[0], '<⌋Ü&invaliD;&#Ff;');
 		});
+		it('newlineBehavior=space replaces newlines with spaces', () => {
+			const options = HtmlTokenizer.createOptions();
+			options.newlineBehavior = 'space';
+			const result = HtmlTokenizer.tokenizeString("1\n2", options);
+			assert.lengthOf(result, 2);
+
+			assertText(result[0], '1');
+			assertText(result[1], '2');
+		});
+		it('newlineBehavior=br replaces newlines with BR tags', () => {
+			const options = HtmlTokenizer.createOptions();
+			options.newlineBehavior = 'br';
+			const result = HtmlTokenizer.tokenizeString("1\n2", options);
+			assert.lengthOf(result, 3);
+
+			assertText(result[0], '1');
+			assertNewline(result[1]);
+			assertText(result[2], '2');
+		});
+		it('newlineBehavior=br windows-style newlines are removed and handled as a single \\n', () => {
+			const options = HtmlTokenizer.createOptions();
+			options.newlineBehavior = 'br';
+			const result = HtmlTokenizer.tokenizeString("1\n\r\n\n2", options);
+			assert.lengthOf(result, 5);
+
+			assertText(result[0], '1');
+			assertNewline(result[1]);
+			assertNewline(result[2]);
+			assertNewline(result[3]);
+			assertText(result[4], '2');
+		});
 	});
 	describe(`Style specificality`, () => {
 		it('parent > default', () => {

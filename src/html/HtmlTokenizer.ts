@@ -37,6 +37,14 @@ export interface HtmlTokenizerOptions {
 	 * `b`, `strong`, `i` and `em`.
 	 */
 	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
+	/**
+	 * How newline characters should be treated:
+	 *  - `space` will replace them with a space
+	 *  - `br` will replace them with a `<br/>` tag
+	 *
+	 *  @remark Windows-style newlines (`\r\n`) are always replaced into a single `\n` tag.
+	 */
+	newlineBehavior: 'space'|'br';
 }
 
 export const HtmlTokenizer = {
@@ -68,6 +76,7 @@ export const HtmlTokenizer = {
 				stretch: 'fontStretch',
 				color: 'color',
 			},
+			newlineBehavior: 'space'
 		};
 	},
 
@@ -88,6 +97,11 @@ export const HtmlTokenizer = {
 				...options.defaultStyles,
 			},
 		};
+
+		text = text.replace(/\r\n/g, "\n");
+		if (options.newlineBehavior === "br") {
+			text = text.replace(/\n/g, '<br/>');
+		}
 
 		for (const htmlToken of htmlSplitString(text)) {
 			// Text token
