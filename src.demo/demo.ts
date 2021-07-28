@@ -102,8 +102,6 @@ function redraw() {
 	context.lineTo(drawX, drawY);
 	context.stroke();
 
-	console.log(arrangedText);
-
 	CanvasRichText.renderArrangedText(
 		arrangedText,
 		context,
