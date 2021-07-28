@@ -60,7 +60,7 @@ export const HtmlTokenizer = {
 				'i': {fontStyle: 'italic'},
 				'em': {fontStyle: 'italic'},
 			},
-			defaultStyles: defaultStyle,
+			defaultStyles: {...defaultStyle},
 			attributeToStyleMap: {
 				fontsize: 'fontSize',
 				size: 'fontSize',
