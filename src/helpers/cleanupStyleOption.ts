@@ -108,7 +108,7 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 			return undefined;
 		case "fontSize":
 			if (!validateFontSize.test(value)) {
-				errorCallback?.(field, value, "'invalid' is not a valid value for fontSize");
+				errorCallback?.(field, value, `'${value}' is not a valid value for fontSize`);
 				return undefined;
 			}
 
@@ -187,6 +187,14 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 		case "spaceWidth":
 			if (!validateOtherSize.test(value)) {
 				errorCallback?.(field, value, `'${value}' is not a valid value for spaceWidth`);
+				return undefined;
+			}
+
+			return parseFloat(value.replace(trimForOtherSize, ''));
+
+		case "lineSpacing":
+			if (!validateOtherSize.test(value)) {
+				errorCallback?.(field, value, `'${value}' is not a valid value for lineSpacing`);
 				return undefined;
 			}
 

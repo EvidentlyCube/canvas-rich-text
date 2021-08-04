@@ -44,6 +44,9 @@ describe("cleanupStyleOption", () => {
 			cleanupStyleOption("fontSize", "invalid", errorCallback);
 			assertError("fontSize", "invalid", "'invalid' is not a valid value for fontSize");
 
+			cleanupStyleOption("fontSize", "inv", errorCallback);
+			assertError("fontSize", "inv", "'inv' is not a valid value for fontSize");
+
 			cleanupStyleOption("fontSize", "0", errorCallback);
 			assertError("fontSize", "0", "fontSize must be larger than 0");
 		});
@@ -279,6 +282,42 @@ describe("cleanupStyleOption", () => {
 		it("Calls error callback on error", () => {
 			cleanupStyleOption("spaceWidth", "invalid", errorCallback);
 			assertError("spaceWidth", "invalid", "'invalid' is not a valid value for spaceWidth");
+			
+			cleanupStyleOption("spaceWidth", "inv", errorCallback);
+			assertError("spaceWidth", "inv", "'inv' is not a valid value for spaceWidth");
+			
+		});
+	});
+
+	describe('lineSpacing', () => {
+		it("Numbers with or without PX are valid", () => {
+			assert.equal(cleanupStyleOption("lineSpacing", "14"), 14);
+			assert.equal(cleanupStyleOption("lineSpacing", "7px"), 7);
+			assert.equal(cleanupStyleOption("lineSpacing", "0.1px"), 0.1);
+			assert.equal(cleanupStyleOption("lineSpacing", "+2"), 2);
+			assert.equal(cleanupStyleOption("lineSpacing", "0"), 0);
+			assert.equal(cleanupStyleOption("lineSpacing", "-4"), -4);
+			assert.equal(cleanupStyleOption("lineSpacing", "-73px"), -73);
+		});
+		it("Different size types are invalid", () => {
+			assert.equal(cleanupStyleOption("lineSpacing", "7pt"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "7vw"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "7%"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "7vmax"), undefined);
+		});
+		it("Any other text is invalid", () => {
+			assert.equal(cleanupStyleOption("lineSpacing", "seven"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "smaller"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "7.7.7"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", "3,14"), undefined);
+			assert.equal(cleanupStyleOption("lineSpacing", ""), undefined);
+		});
+		it("Calls error callback on error", () => {
+			cleanupStyleOption("lineSpacing", "invalid", errorCallback);
+			assertError("lineSpacing", "invalid", "'invalid' is not a valid value for lineSpacing");
+
+			cleanupStyleOption("lineSpacing", "inv", errorCallback);
+			assertError("lineSpacing", "inv", "'inv' is not a valid value for lineSpacing");
 		});
 	});
 });
