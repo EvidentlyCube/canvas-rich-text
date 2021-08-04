@@ -1,147 +1,103 @@
-import {htmlSplitString} from "./htmlSplitString";
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
-import {TokenizeElement} from "./interfaces";
+import {htmlSplitString} from "./htmlSplitString";
 import {extractStylesFromAttributes} from "./extractStylesFromAttributes";
-import {measureText} from "../rendering/measureText";
-import {Token, TokenType} from "../Token";
-import {decodeHtmlEntities} from "./decodeHtmlEntities";
+import { Block, InlineText } from "../common";
 
-/**
- * HTML Tokenization options.
- */
-export interface HtmlTokenizerOptions {
-	/**
-	 * An array of HTML tag names (must be lowercase) that will have an end line inserted when they are closed.
-	 * Defaults to: p, div and br.
-	 *
-	 * @remarks
-	 * `<br/>` tag must **always** be closed.
-	 */
-	blockTags: string[];
-	/**
-	 * Default style options to use for text with no custom styling.
-	 */
-	defaultStyles: StyleOptions;
-	/**
-	 * A mapping between an attribute name (lowercase) and a style it sets.
-	 * By default these attributes are supported:
-	 * `fontsize`, `size`, `fontstyle`, `style`, `fontweight`, `weight`,
-	 * `fontvariant`, `variant`, `fontfamily`, `family`,
-	 * `fontstretch`, `stretch`, `color`
-	 */
-	attributeToStyleMap: Record<string, keyof StyleOptions>;
-	/**
-	 * A maping between a tag name (lowercase) and its default styles.
-	 * By default these tags have styles:
-	 * `b`, `strong`, `i` and `em`.
-	 */
-	tagDefaultStyles: Record<string, Partial<StyleOptions>>;
-	/**
-	 * How newline characters should be treated:
-	 *  - `space` will replace them with a space
-	 *  - `br` will replace them with a `<br/>` tag
-	 *
-	 *  @remark Windows-style newlines (`\r\n`) are always replaced with a single `\n` tag.
-	 */
-	newlineBehavior?: 'space'|'br';
+function isBlockTag(tag: string) {
+	return tag === 'p';
+}
+
+function getTagStyle(tag: string): Partial<StyleOptions> {
+	switch(tag) {
+		case 'b':
+		case 'strong':
+			return {fontWeight: 'bold'};
+		case 'em':
+		case 'i':
+			return {fontStyle: 'italic'};
+
+		default:
+			return {};
+	}
+}
+
+const attributeToStyle: Record<string, keyof StyleOptions> = {
+	fontsize: 'fontSize',
+	size: 'fontSize',
+	fontvariant: 'fontVariant',
+	variant: 'fontVariant',
+	fontfamily: 'fontFamily',
+	family: 'fontFamily',
+	fontweight: 'fontWeight',
+	weight: 'fontWeight',
+	fontstyle: 'fontStyle',
+	style: 'fontStyle',
+	fontstretch: 'fontStretch',
+	stretch: 'fontStretch',
 }
 
 export const HtmlTokenizer = {
-	/**
-	 * Creates new HTML tokenization options, filled with the default values.
-	 */
-	createOptions(): HtmlTokenizerOptions {
-		return {
-			blockTags: ['p', 'div', 'br'],
-			tagDefaultStyles: {
-				'b': {fontWeight: 'bold'},
-				'strong': {fontWeight: 'bold'},
-				'i': {fontStyle: 'italic'},
-				'em': {fontStyle: 'italic'},
-			},
-			defaultStyles: {...defaultStyle},
-			attributeToStyleMap: {
-				fontsize: 'fontSize',
-				size: 'fontSize',
-				fontstyle: 'fontStyle',
-				style: 'fontStyle',
-				fontweight: 'fontWeight',
-				weight: 'fontWeight',
-				fontvariant: "fontVariant",
-				variant: 'fontVariant',
-				fontfamily: 'fontFamily',
-				family: 'fontFamily',
-				fontstretch: 'fontStretch',
-				stretch: 'fontStretch',
-				color: 'color',
-			},
-			newlineBehavior: 'space'
-		};
-	},
-
 	/**
 	 * Converts an HTML string into tokens.
 	 * @param text The text to convert
 	 * @param options Optional tokenization options. When not provided it uses the options
 	 * as returned by [[createOptions]].
 	 */
-	tokenizeString(text: string, options?: HtmlTokenizerOptions): Token[] {
-		options = options ?? HtmlTokenizer.createOptions();
-		const tokens: Token[] = [];
-		const stylesStack: TokenizeElement[] = [];
+	tokenizeString(text: string, defStyle: Partial<StyleOptions>): Block {
+		const style = {...defaultStyle, ...defStyle};
 
-		let currentElement: TokenizeElement = {
-			tag: 'body',
-			style: {
-				...options.defaultStyles,
-			},
-		};
+		const rootBlock: Block = {children: [], style};
+		const blockStack: Block[] = [];
+		const styleStack: StyleOptions[] = [];
+
+		let currentBlock: Block = rootBlock;
+		let currentInlineText: InlineText | undefined = undefined;
+		let currentStyle = style;
 
 		text = text.replace(/\r\n/g, "\n");
-		if (options.newlineBehavior === "br") {
-			text = text.replace(/\n/g, '<br/>');
-		}
 
 		for (const htmlToken of htmlSplitString(text)) {
-			// Text token
-			if (typeof htmlToken.text !== 'undefined') {
-				const style: StyleOptions = {
-					...currentElement.style,
-				};
+			switch (htmlToken.type) {
+				case 0:
+					if (!currentInlineText) {
+						currentInlineText = {pieces: []};
+						currentBlock.children.push(currentInlineText);
+					}
 
-				const text = decodeHtmlEntities(htmlToken.text);
-				tokens.push({
-					type: TokenType.Text,
-					text: text,
-					metrics: measureText(text, style),
-					style,
-				});
+					currentInlineText.pieces.push({text: htmlToken.text, style: currentStyle});
+					break;
+				case 1:
+					if (isBlockTag(htmlToken.tag)) {
+						const newBlock = {children: [], style: currentStyle};
+						currentBlock.children.push(newBlock);
+						blockStack.push(currentBlock);
+						currentBlock = newBlock;
+						currentInlineText = undefined;
+					} else {
+						styleStack.push(currentStyle);
+						currentStyle = {...currentStyle, ...getTagStyle(htmlToken.tag)}
+					}
+					currentStyle = {...currentStyle, ...extractStylesFromAttributes(htmlToken.style, attributeToStyle)}
+					break;
 
-			} else if (typeof htmlToken.style !== 'undefined' && typeof htmlToken.tag !== 'undefined') {
-				// Open tag
-				const tagStyle = options.tagDefaultStyles[htmlToken.tag] ?? {};
-				stylesStack.push(currentElement);
-				currentElement = {
-					tag: htmlToken.tag,
-					style: {
-						...currentElement.style,
-						...tagStyle,
-						...extractStylesFromAttributes(htmlToken.style, options.attributeToStyleMap),
-					},
-				};
-			} else {
-				// Close tag
-				if (options.blockTags.indexOf(currentElement.tag) !== -1) {
-					tokens.push({type: TokenType.Newline});
-				}
+				case 2:
+					if (isBlockTag(htmlToken.tag)) {
+						const lastBlock = currentBlock;
+						currentBlock = blockStack.pop()!;
+						currentInlineText = undefined;
 
-				if (stylesStack.length > 0) {
-					currentElement = stylesStack.pop()!;
-				}
+						// Remove block when it's empty
+						if (lastBlock.children.length === 0) {
+							currentBlock.children.splice(currentBlock.children.indexOf(lastBlock), 1);
+						}
+					} else {
+						currentStyle = styleStack.pop()!
+					}
+					break;
 			}
 		}
 
-		return tokens;
+		return rootBlock;
 	},
 };

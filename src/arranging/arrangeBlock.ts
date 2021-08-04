@@ -1,43 +1,6 @@
-import {Block, InlineText, InlineTextPiece} from "../Token";
+import { Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex } from "../common";
+import { MeasureText } from "../rendering/internal";
 import {StyleOptions} from "../StyleOptions";
-
-export const SPACE = 10;
-
-interface RichTextVertexWord {
-	type: 'word';
-	text: string;
-	style: StyleOptions;
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
-
-export type RichTextVertex = RichTextVertexWord;
-
-export interface RichTextArrangedRender {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	vertices: RichTextVertex[];
-}
-
-interface RichTextBlock {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
-
-interface TextMeasure {
-	xOffset: number;
-	yOffset: number;
-	width: number;
-	height: number;
-}
-
-type MeasureText = (text: InlineTextPiece) => TextMeasure;
 
 export function arrangeBlocks(blocks: Block, measureText: MeasureText): RichTextArrangedRender {
 	const vertices: RichTextVertex[] = [];
@@ -166,6 +129,8 @@ function arrangeInlineText(
 			type: "word",
 			x: x + measure.xOffset,
 			y: y + measure.yOffset,
+			drawOffsetX: 0,
+			drawOffsetY: 0,
 			width: measure.width,
 			height: measure.height,
 			style: piece.style,

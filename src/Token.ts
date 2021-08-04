@@ -17,17 +17,3 @@ export interface NewlineToken {
 }
 
 export type Token = TextToken | NewlineToken;
-
-export interface Block{
-	style: StyleOptions;
-	children: (Block|InlineText)[];
-}
-
-export interface InlineText {
-	pieces: InlineTextPiece[];
-}
-
-export interface InlineTextPiece {
-	text: string;
-	style: StyleOptions;
-}

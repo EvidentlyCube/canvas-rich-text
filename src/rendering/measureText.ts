@@ -1,17 +1,17 @@
-import {StyleOptions} from "../StyleOptions";
-import {configureCanvas} from "./configureCanvas";
+import { InlineTextPiece } from "../common";
+import { configureCanvas } from "./configureCanvas";
+import { TextMeasure } from "./internal";
 
-const canvas = typeof document !== 'undefined'
-	? document.createElement('canvas')
-	: undefined;
-const canvasContext = canvas?.getContext('2d');
 
-export function measureText(text: string, style: StyleOptions): TextMetrics {
-	if (!canvasContext) {
-		return {} as any;
+export function measureText(text: InlineTextPiece, context: CanvasRenderingContext2D): TextMeasure {
+	configureCanvas(text.style, context);
+	const measure = context.measureText(text.text);
+
+	return {
+		width: measure.width,
+		height: measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent,
+		xOffset: measure.actualBoundingBoxLeft,
+		yOffset: 0,
+		ascent: measure.actualBoundingBoxAscent
 	}
-
-	configureCanvas(style, canvasContext);
-
-	return canvasContext.measureText(text);
 }

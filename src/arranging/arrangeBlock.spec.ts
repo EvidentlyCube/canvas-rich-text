@@ -1,11 +1,11 @@
-import {Block, InlineText, InlineTextPiece} from "../Token";
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
-import {arrangeBlocks, RichTextArrangedRender, RichTextVertex} from "./arrangeBlock";
 import {assert} from "chai";
+import { Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex } from "../common";
+import { arrangeBlocks } from "./arrangeBlock";
+import { TextMeasure } from "../rendering/internal";
 
 const WIDTH = 10;
-const SPACE_WIDTH = 5;
 const HEIGHT = 10;
 
 function b(...children: Block["children"]) {
@@ -39,19 +39,24 @@ function tps(...text: (string | Partial<StyleOptions>)[]): InlineText {
 
 function arrange(block: Block) {
 	return arrangeBlocks(block, x => {
-		if (x.text.charAt(0) === ' ') {
-			return {
-				width: SPACE_WIDTH * x.text.length,
-				height: 0,
-				xOffset: 0,
-				yOffset: 0,
-			}
-		}
 		return {
 			width: WIDTH * x.text.length,
 			height: HEIGHT,
 			xOffset: 0,
 			yOffset: 0,
+			ascent: 0
+		}
+	});
+}
+
+function arrangeAscent(block: Block) {
+	return arrangeBlocks(block, x => {
+		return {
+			width: WIDTH * x.text.length,
+			height: HEIGHT * x.text.length,
+			xOffset: 0,
+			yOffset: 0,
+			ascent: x.text.length
 		}
 	});
 }
@@ -323,6 +328,18 @@ describe("arrangeBlock", () => {
 			assertResult(result, 2, 0, 0, 95, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 55, 0);
+		});
+	});
+	describe('ascent', () => {
+		it('Max ascent should be added to Y position to ensure proper alignment to baseline', () => {
+			const result = arrangeAscent(b(tps(
+				'w', 'or', 'ded'
+			)));
+
+			assertResult(result, 3, 0, 0, 60, 15);
+			assertWordVertex(result.vertices[0], 0, 2);
+			assertWordVertex(result.vertices[1], 10, 1);
+			assertWordVertex(result.vertices[2], 30, 0);
 		});
 	});
 });

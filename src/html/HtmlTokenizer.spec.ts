@@ -1,9 +1,9 @@
 import {assert} from "chai";
 import {describe, it} from 'mocha';
-import {Block, InlineText, InlineTextPiece} from "../Token";
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
-import {HtmlTokenizer2} from "./HtmlTokenizer2";
+import {HtmlTokenizer} from "./HtmlTokenizer";
+import { Block, InlineText, InlineTextPiece } from "../common";
 
 function bs(style: Partial<StyleOptions>, ...children: Block["children"]): Block {
 	return {children, style: {...defaultStyle, ...style}};
@@ -40,7 +40,7 @@ function btps(...text: (string | Partial<StyleOptions>)[]) {
 
 
 function assertCompare(text: string, expected: Block) {
-	const result = HtmlTokenizer2.tokenizeString(text, {});
+	const result = HtmlTokenizer.tokenizeString(text, {});
 	assert.deepEqual(result, expected);
 }
 

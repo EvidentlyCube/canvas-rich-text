@@ -1,3 +1,5 @@
+import { arrangeBlocks } from "./arranging/arrangeBlock";
+import { Block, RichTextArrangedRender } from "./common";
 import {StyleOptions} from "./StyleOptions";
 
 /**
@@ -19,3 +21,7 @@ export const defaultStyle: StyleOptions = {
 	spaceWidth: 5,
 	newLine: 'preserve'
 };
+
+// export function arrangeBlock(block: Block): RichTextArrangedRender {
+	// const render = arrangeBlocks(block, )
+// } 
