@@ -1,8 +1,12 @@
-import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights, StyleOptions} from "../StyleOptions";
+import {AllowedNewLines, AllowedStretches, AllowedStyles, AllowedTextAligns, AllowedVariants, AllowedWeights, AllowedWhiteSpace as AllowedWhiteSpaces, StyleOptions} from "../StyleOptions";
 
 // Checks if the format is [+/-]<number>[.<number>][px]
-const validateSizeNumber = /^[+]?[0-9]+(?:[.][0-9]+)?(?:px)?$/;
-const trimNonNumbersRegexp = /[^0-9.]/g;
+const validateFontSize = /^[+]?[0-9]+(?:[.][0-9]+)?(?:px)?$/;
+const trimForFontSize = /[^0-9.]/g;
+
+const validateOtherSize = /^[+-]?[0-9]+(?:[.][0-9]+)?(?:px)?$/;
+const trimForOtherSize = /[^0-9.-]/g;
+
 export const validCssColorNames = new Set([
 	'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',
 	'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood',
@@ -54,7 +58,7 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 	field: T,
 	value: string,
 	errorCallback?: CleanupStyleWarningCallback,
-): string | undefined {
+): string | number | undefined {
 	switch (field) {
 		case "color":
 			if (validCssColorNames.has(value.toLowerCase())) {
@@ -103,12 +107,12 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 			errorCallback?.(field, value, `'${value}' is not a valid color name`);
 			return undefined;
 		case "fontSize":
-			if (!validateSizeNumber.test(value)) {
+			if (!validateFontSize.test(value)) {
 				errorCallback?.(field, value, "'invalid' is not a valid value for fontSize");
 				return undefined;
 			}
 
-			const fontSize = parseFloat(value.replace(trimNonNumbersRegexp, ''));
+			const fontSize = parseFloat(value.replace(trimForFontSize, ''));
 
 			if (fontSize <= 0) {
 				errorCallback?.(field, value, 'fontSize must be larger than 0');
@@ -155,6 +159,38 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 			}
 
 			return value;
+
+		case "textAlign":
+			if (!AllowedTextAligns.has(value.toLowerCase())) {
+				errorCallback?.(field, value, `'${value}' is not a valid textAlign value`);
+				return undefined;
+			}
+
+			return value;
+
+		case "whiteSpace":
+			if (!AllowedWhiteSpaces.has(value.toLowerCase())) {
+				errorCallback?.(field, value, `'${value}' is not a valid whiteSpace value`);
+				return undefined;
+			}
+
+			return value;
+
+		case "newLine":
+			if (!AllowedNewLines.has(value.toLowerCase())) {
+				errorCallback?.(field, value, `'${value}' is not a valid newLine value`);
+				return undefined;
+			}
+
+			return value;
+
+		case "spaceWidth":
+			if (!validateOtherSize.test(value)) {
+				errorCallback?.(field, value, `'${value}' is not a valid value for spaceWidth`);
+				return undefined;
+			}
+
+			return parseFloat(value.replace(trimForOtherSize, ''));
 	}
 
 	return undefined;

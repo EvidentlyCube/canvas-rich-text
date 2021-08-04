@@ -1,7 +1,7 @@
 import {assert} from "chai";
 import {describe, it} from 'mocha';
 import {__isValidColor, cleanupStyleOption, validCssColorNames} from "./cleanupStyleOption";
-import {AllowedStretches, AllowedStyles, AllowedVariants, AllowedWeights} from "../StyleOptions";
+import {AllowedNewLines, AllowedStretches, AllowedStyles, AllowedTextAligns, AllowedVariants, AllowedWeights, AllowedWhiteSpace} from "../StyleOptions";
 
 let lastError = {
 	field: "",
@@ -193,6 +193,92 @@ describe("cleanupStyleOption", () => {
 
 			assert.equal(cleanupStyleOption("color", 'hsla(0, 50%, 50%, 3)', errorCallback), undefined);
 			assertError('color', 'hsla(0, 50%, 50%, 3)', "'hsla(0, 50%, 50%, 3)' is not a valid HSLA color");
+		});
+	});
+
+	describe("textAlign", () => {
+		Array.from(AllowedTextAligns.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
+			assert.equal(cleanupStyleOption("textAlign", style), style);
+			assert.equal(cleanupStyleOption("textAlign", style.toLowerCase()), style.toLowerCase());
+			assert.equal(cleanupStyleOption("textAlign", style.toUpperCase()), style.toUpperCase());
+		}));
+		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
+			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+				'',
+				' ',
+				'invalid',
+			]);
+			testValues.forEach(style => it(`'${style}'`, () => {
+				assert.equal(cleanupStyleOption("textAlign", style, errorCallback), undefined);
+				assertError("textAlign", style, `'${style}' is not a valid textAlign value`);
+			}));
+		});
+	});
+
+	describe("whiteSpace", () => {
+		Array.from(AllowedWhiteSpace.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
+			assert.equal(cleanupStyleOption("whiteSpace", style), style);
+			assert.equal(cleanupStyleOption("whiteSpace", style.toLowerCase()), style.toLowerCase());
+			assert.equal(cleanupStyleOption("whiteSpace", style.toUpperCase()), style.toUpperCase());
+		}));
+		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
+			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+				'',
+				' ',
+				'invalid',
+			]);
+			testValues.forEach(style => it(`'${style}'`, () => {
+				assert.equal(cleanupStyleOption("whiteSpace", style, errorCallback), undefined);
+				assertError("whiteSpace", style, `'${style}' is not a valid whiteSpace value`);
+			}));
+		});
+	});
+
+	describe("newLine", () => {
+		Array.from(AllowedNewLines.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
+			assert.equal(cleanupStyleOption("newLine", style), style);
+			assert.equal(cleanupStyleOption("newLine", style.toLowerCase()), style.toLowerCase());
+			assert.equal(cleanupStyleOption("newLine", style.toUpperCase()), style.toUpperCase());
+		}));
+		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
+			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+				'',
+				' ',
+				'invalid',
+			]);
+			testValues.forEach(style => it(`'${style}'`, () => {
+				assert.equal(cleanupStyleOption("newLine", style, errorCallback), undefined);
+				assertError("newLine", style, `'${style}' is not a valid newLine value`);
+			}));
+		});
+	});
+
+	describe('spaceWidth', () => {
+		it("Numbers with or without PX are valid", () => {
+			assert.equal(cleanupStyleOption("spaceWidth", "14"), 14);
+			assert.equal(cleanupStyleOption("spaceWidth", "7px"), 7);
+			assert.equal(cleanupStyleOption("spaceWidth", "0.1px"), 0.1);
+			assert.equal(cleanupStyleOption("spaceWidth", "+2"), 2);
+			assert.equal(cleanupStyleOption("spaceWidth", "0"), 0);
+			assert.equal(cleanupStyleOption("spaceWidth", "-4"), -4);
+			assert.equal(cleanupStyleOption("spaceWidth", "-73px"), -73);
+		});
+		it("Different size types are invalid", () => {
+			assert.equal(cleanupStyleOption("spaceWidth", "7pt"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "7vw"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "7%"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "7vmax"), undefined);
+		});
+		it("Any other text is invalid", () => {
+			assert.equal(cleanupStyleOption("spaceWidth", "seven"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "smaller"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "7.7.7"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", "3,14"), undefined);
+			assert.equal(cleanupStyleOption("spaceWidth", ""), undefined);
+		});
+		it("Calls error callback on error", () => {
+			cleanupStyleOption("spaceWidth", "invalid", errorCallback);
+			assertError("spaceWidth", "invalid", "'invalid' is not a valid value for spaceWidth");
 		});
 	});
 });

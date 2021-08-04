@@ -2,11 +2,14 @@ export const AllowedStyles = new Set(['normal', 'italic']);
 export const AllowedWeights = new Set(['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder']);
 export const AllowedVariants = new Set(['normal', 'small-caps']);
 export const AllowedStretches = new Set(['ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded']);
+export const AllowedTextAligns = new Set(['left', 'center', 'right']);
+export const AllowedWhiteSpace = new Set(['collapse-all', 'preserve-all', 'collapse-outer']);
+export const AllowedNewLines = new Set(['space', 'ignore', 'preserve']);
 
-export type FontStyles = 'normal' | 'italic';
-export type FontWeights = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold' | 'lighter' | 'bolder';
-export type FontVariants = 'normal' | 'small-caps';
-export type FontStretches = 'ultra-condensed'
+export type FontStyle = 'normal' | 'italic';
+export type FontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold' | 'lighter' | 'bolder';
+export type FontVariant = 'normal' | 'small-caps';
+export type FontStretch = 'ultra-condensed'
 | 'extra-condensed'
 | 'condensed'
 | 'semi-condensed'
@@ -15,20 +18,23 @@ export type FontStretches = 'ultra-condensed'
 | 'expanded'
 | 'extra-expanded'
 | 'ultra-expanded';
-export type TextAligns = 'left' | 'center' | 'right' | 'justify';
+export type TextAlign = 'left' | 'center' | 'right';
+export type WhiteSpace = 'collapse-all'|'preserve-all'|'collapse-outer';
+export type NewLine = 'space'|'ignore'|'preserve';
 
 export interface StyleOptions {
 	color: string;
 	fontSize: string;
 	fontFamily: string;
-	fontStyle: FontStyles;
-	fontWeight: FontWeights;
-	fontVariant: FontVariants;
-	fontStretch: FontStretches;
+	fontStyle: FontStyle;
+	fontWeight: FontWeight;
+	fontVariant: FontVariant;
+	fontStretch: FontStretch;
 
 	width: number;
-	textAlign: TextAligns;
+	textAlign: TextAlign;
 	lineSpacing: number;
-	whiteSpace: 'collapse-all'|'preserve-all'|'collapse-outer',
+	whiteSpace: WhiteSpace,
 	spaceWidth: number;
+	newLine: NewLine;
 }
