@@ -15,6 +15,7 @@ export type FontStretches = 'ultra-condensed'
 | 'expanded'
 | 'extra-expanded'
 | 'ultra-expanded';
+export type TextAligns = 'left' | 'center' | 'right' | 'justify';
 
 export interface StyleOptions {
 	color: string;
@@ -24,4 +25,10 @@ export interface StyleOptions {
 	fontWeight: FontWeights;
 	fontVariant: FontVariants;
 	fontStretch: FontStretches;
+
+	width: number;
+	textAlign: TextAligns;
+	lineSpacing: number;
+	whiteSpace: 'collapse-all'|'preserve-all'|'collapse-outer',
+	spaceWidth: number;
 }
