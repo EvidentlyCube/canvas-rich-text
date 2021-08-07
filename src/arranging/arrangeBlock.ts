@@ -43,6 +43,7 @@ interface Coords {
 interface ArrangedLine {
 	width: number;
 	height: number;
+	maxAscent: number;
 	vertices: RichTextVertex[];
 }
 
@@ -53,7 +54,7 @@ function arrangeInlineText(
 	measureText: MeasureText,
 	vertices: RichTextVertex[],
 ): number {
-	let currentLine: ArrangedLine = {height: 0, width: 0, vertices: []};
+	let currentLine: ArrangedLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 	const lines = [currentLine];
 	const nextRenderPosition = {x: 0, y: lastBottom};
 	
@@ -97,7 +98,7 @@ function arrangeInlineText(
 			nextRenderPosition.x = 0;
 			nextRenderPosition.y += currentLine.height + blockStyle.lineSpacing;
 			
-			currentLine = {height: 0, width: 0, vertices: []};
+			currentLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 			lines.push(currentLine);
 
 			continue;
@@ -116,7 +117,7 @@ function arrangeInlineText(
 			nextRenderPosition.x = 0;
 			nextRenderPosition.y = y;
 
-			currentLine = {height: 0, width: 0, vertices: []};
+			currentLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 			lines.push(currentLine);
 		} else {
 			const old = nextRenderPosition.x;
@@ -139,6 +140,7 @@ function arrangeInlineText(
 
 		currentLine.vertices.push(vertex);
 		currentLine.width += remainingWhiteSpace + vertex.width;
+		currentLine.maxAscent = Math.max(currentLine.maxAscent, measure.ascent)
 		console.log(`Line width: ${currentLine.width}`);
 		currentLine.height = Math.max(currentLine.height, vertex.height);
 		vertices.push(vertex);
@@ -150,6 +152,10 @@ function arrangeInlineText(
 
 	if (blockStyle.whiteSpace === 'preserve-all') {
 		currentLine.width += remainingWhiteSpace;
+	}
+
+	for(const vertex of currentLine.vertices) {
+		vertex.y += currentLine.maxAscent;
 	}
 
 	alignLines(lines, blockStyle);

@@ -53,7 +53,7 @@ function arrangeAscent(block: Block) {
 	return arrangeBlocks(block, x => {
 		return {
 			width: WIDTH * x.text.length,
-			height: HEIGHT * x.text.length,
+			height: HEIGHT,
 			xOffset: 0,
 			yOffset: 0,
 			ascent: x.text.length
@@ -336,10 +336,10 @@ describe("arrangeBlock", () => {
 				'w', 'or', 'ded'
 			)));
 
-			assertResult(result, 3, 0, 0, 60, 15);
-			assertWordVertex(result.vertices[0], 0, 2);
-			assertWordVertex(result.vertices[1], 10, 1);
-			assertWordVertex(result.vertices[2], 30, 0);
+			assertResult(result, 3, 0, 3, 60, 10);
+			assertWordVertex(result.vertices[0], 0, 3);
+			assertWordVertex(result.vertices[1], 10, 3);
+			assertWordVertex(result.vertices[2], 30, 3);
 		});
 	});
 });
