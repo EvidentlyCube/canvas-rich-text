@@ -27,24 +27,40 @@ The full documentation can be found [here](https://evidentlycube.github.io/canva
 The library can be used like this:
 
 ```
-import {arrangeText, renderArrangedText, HtmlTokenizer} from 'canvas-rich-text';
+import {arrangeBlock, drawArrangedText, parseHtmlString, Styles} from "../src";
 
-const text = `<p>Paragraph <strong>bold</strong> <em>italic</em></p>`;
-const tokens = HtmlTokenizer.tokenizeString(text);
-const arrangedText = arrangeText(tokens, {
-    wordWrapWidth: 300,
-    spaceWidth: 8,
-    lineSpacing: 5
-});
-renderArrangedText(arrangedText, canvas, 0, 0);
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+document.querySelector('body')!.appendChild(canvas);
+
+if (!context) {
+	throw new Error("Failed to create canvas' 2d context");
+}
+
+const exampleHtml = `<p align="center">
+	<strong>Bold</strong> and <span size="50">Big</span> text is <span color="rgba(255, 0, 0, 0.3)">RED</span>..
+</p>`;
+
+const style: Partial<Styles.StyleOptions> = {
+	width: 120,
+	newLine: "ignore",
+	whiteSpace: 'collapse-all',
+};
+
+// Convert HTML into a Block
+const textBlock = parseHtmlString(exampleHtml, style);
+// Arrange the block for drawing
+const arrangedText = arrangeBlock(textBlock);
+// Draw the arranged text
+drawArrangedText(arrangedText, context, 10, 10);
 ```   
 
 ## Details
 
 The library works in three steps:
 
- 1. Convert HTML text into tokens.
- 2. Arrange tokens into arranged text.
+ 1. Convert HTML text into a Block.
+ 2. Arrange the block into vertices.
  3. Render the arranged text.
 
 You can write your own parser to create the tokens from any format you want, or create the tokens directly.

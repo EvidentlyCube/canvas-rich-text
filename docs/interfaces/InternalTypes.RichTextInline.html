@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Tokens | Canvas Rich Text library</title>
+	<title>RichTextInline | Canvas Rich Text library</title>
 	<meta name="description" content="Documentation for Canvas Rich Text library">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,51 +53,63 @@
 					<a href="../modules.html">Canvas Rich Text library</a>
 				</li>
 				<li>
-					<a href="Tokens.html">Tokens</a>
+					<a href="../modules/InternalTypes.html">InternalTypes</a>
+				</li>
+				<li>
+					<a href="InternalTypes.RichTextInline.html">RichTextInline</a>
 				</li>
 			</ul>
-			<h1>Namespace Tokens</h1>
+			<h1>Interface RichTextInline</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<dl class="tsd-comment-tags">
+						<dt>internal</dt>
+						<dd><p>An inline Rich Text, made of words.</p>
+						</dd>
+						<dt>remark</dt>
+						<dd><p>This is returned from a parser and used when arranging rich text.
+								Unless you plan to write your own parser you are unlikely to
+							need to use this data structure.</p>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">RichTextInline</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumerations</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum tsd-parent-kind-namespace"><a href="../enums/Tokens.TokenType.html" class="tsd-kind-icon">Token<wbr>Type</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/Tokens.NewlineToken.html" class="tsd-kind-icon">Newline<wbr>Token</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/Tokens.TextToken.html" class="tsd-kind-icon">Text<wbr>Token</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-namespace"><a href="Tokens.html#Token" class="tsd-kind-icon">Token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="InternalTypes.RichTextInline.html#words" class="tsd-kind-icon">words</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-namespace">
-					<a name="Token" class="tsd-anchor"></a>
-					<h3>Token</h3>
-					<div class="tsd-signature tsd-kind-icon">Token<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Tokens.TextToken.html" class="tsd-signature-type" data-tsd-kind="Interface">TextToken</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/Tokens.NewlineToken.html" class="tsd-signature-type" data-tsd-kind="Interface">NewlineToken</a></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="words" class="tsd-anchor"></a>
+					<h3>words</h3>
+					<div class="tsd-signature tsd-kind-icon">words<span class="tsd-signature-symbol">:</span> <a href="InternalTypes.RichTextInlineWord.html" class="tsd-signature-type" data-tsd-kind="Interface">RichTextInlineWord</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/Token.ts#L19">Token.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/c815bcb/src/common.ts#L29">common.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -109,27 +121,39 @@
 					<li class=" ">
 						<a href="../modules.html">Exports</a>
 					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="Styles.html">Styles</a>
-					</li>
 					<li class="current tsd-kind-namespace">
-						<a href="Tokens.html">Tokens</a>
+						<a href="../modules/InternalTypes.html">Internal<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Styles.html">Styles</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-namespace">
-						<a href="../enums/Tokens.TokenType.html" class="tsd-kind-icon">Token<wbr>Type</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="InternalTypes.ArrangedRichText.html" class="tsd-kind-icon">Arranged<wbr>Rich<wbr>Text</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="../interfaces/Tokens.NewlineToken.html" class="tsd-kind-icon">Newline<wbr>Token</a>
+						<a href="InternalTypes.RichTextBlock.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Block</a>
 					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="InternalTypes.RichTextInline.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Inline</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="InternalTypes.RichTextInline.html#words" class="tsd-kind-icon">words</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="../interfaces/Tokens.TextToken.html" class="tsd-kind-icon">Text<wbr>Token</a>
+						<a href="InternalTypes.RichTextInlineWord.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Inline<wbr>Word</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="Tokens.html#Token" class="tsd-kind-icon">Token</a>
+						<a href="../modules/InternalTypes.html#RichTextVertex" class="tsd-kind-icon">Rich<wbr>Text<wbr>Vertex</a>
 					</li>
 				</ul>
 			</nav>
@@ -140,6 +164,9 @@
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
 		</div>
 	</div>
 </footer>

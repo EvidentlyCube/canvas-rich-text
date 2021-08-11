@@ -80,24 +80,40 @@
 				</a>
 				<p>The full documentation can be found <a href="https://evidentlycube.github.io/canvas-rich-text/index.html">here</a>.</p>
 				<p>The library can be used like this:</p>
-				<pre><code><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">arrangeText</span><span style="color: #000000">, </span><span style="color: #001080">renderArrangedText</span><span style="color: #000000">, </span><span style="color: #001080">HtmlTokenizer</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;canvas-rich-text&#039;</span><span style="color: #000000">;</span>
+				<pre><code><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">arrangeBlock</span><span style="color: #000000">, </span><span style="color: #001080">drawArrangedText</span><span style="color: #000000">, </span><span style="color: #001080">parseHtmlString</span><span style="color: #000000">, </span><span style="color: #001080">Styles</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../src&quot;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">text</span><span style="color: #000000"> = </span><span style="color: #A31515">`&lt;p&gt;Paragraph &lt;strong&gt;bold&lt;/strong&gt; &lt;em&gt;italic&lt;/em&gt;&lt;/p&gt;`</span><span style="color: #000000">;</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">tokens</span><span style="color: #000000"> = </span><span style="color: #001080">HtmlTokenizer</span><span style="color: #000000">.</span><span style="color: #795E26">tokenizeString</span><span style="color: #000000">(</span><span style="color: #001080">text</span><span style="color: #000000">);</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">arrangedText</span><span style="color: #000000"> = </span><span style="color: #795E26">arrangeText</span><span style="color: #000000">(</span><span style="color: #001080">tokens</span><span style="color: #000000">, {</span>
-<span style="color: #000000">    </span><span style="color: #001080">wordWrapWidth:</span><span style="color: #000000"> </span><span style="color: #098658">300</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">spaceWidth:</span><span style="color: #000000"> </span><span style="color: #098658">8</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">lineSpacing:</span><span style="color: #000000"> </span><span style="color: #098658">5</span>
-<span style="color: #000000">});</span>
-<span style="color: #795E26">renderArrangedText</span><span style="color: #000000">(</span><span style="color: #001080">arrangedText</span><span style="color: #000000">, </span><span style="color: #001080">canvas</span><span style="color: #000000">, </span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">canvas</span><span style="color: #000000"> = </span><span style="color: #001080">document</span><span style="color: #000000">.</span><span style="color: #795E26">createElement</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;canvas&#039;</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">context</span><span style="color: #000000"> = </span><span style="color: #001080">canvas</span><span style="color: #000000">.</span><span style="color: #795E26">getContext</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;2d&#039;</span><span style="color: #000000">);</span>
+<span style="color: #001080">document</span><span style="color: #000000">.</span><span style="color: #795E26">querySelector</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;body&#039;</span><span style="color: #000000">)!.</span><span style="color: #795E26">appendChild</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">context</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Failed to create canvas&#039; 2d context&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">exampleHtml</span><span style="color: #000000"> = </span><span style="color: #A31515">`&lt;p align=&quot;center&quot;&gt;</span>
+<span style="color: #A31515">    &lt;strong&gt;Bold&lt;/strong&gt; and &lt;span size=&quot;50&quot;&gt;Big&lt;/span&gt; text is &lt;span color=&quot;rgba(255, 0, 0, 0.3)&quot;&gt;RED&lt;/span&gt;..</span>
+<span style="color: #A31515">&lt;/p&gt;`</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">style</span><span style="color: #000000">: </span><span style="color: #267F99">Partial</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Styles</span><span style="color: #000000">.</span><span style="color: #267F99">StyleOptions</span><span style="color: #000000">&gt; = {</span>
+<span style="color: #000000">    </span><span style="color: #001080">width:</span><span style="color: #000000"> </span><span style="color: #098658">120</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">newLine:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;ignore&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">whiteSpace:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;collapse-all&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #008000">// Convert HTML into a Block</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">textBlock</span><span style="color: #000000"> = </span><span style="color: #795E26">parseHtmlString</span><span style="color: #000000">(</span><span style="color: #001080">exampleHtml</span><span style="color: #000000">, </span><span style="color: #001080">style</span><span style="color: #000000">);</span>
+<span style="color: #008000">// Arrange the block for drawing</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">arrangedText</span><span style="color: #000000"> = </span><span style="color: #795E26">arrangeBlock</span><span style="color: #000000">(</span><span style="color: #001080">textBlock</span><span style="color: #000000">);</span>
+<span style="color: #008000">// Draw the arranged text</span>
+<span style="color: #795E26">drawArrangedText</span><span style="color: #000000">(</span><span style="color: #001080">arrangedText</span><span style="color: #000000">, </span><span style="color: #001080">context</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#details" id="details" style="color: inherit; text-decoration: none;">
 					<h2>Details</h2>
 				</a>
 				<p>The library works in three steps:</p>
 				<ol>
-					<li>Convert HTML text into tokens.</li>
-					<li>Arrange tokens into arranged text.</li>
+					<li>Convert HTML text into a Block.</li>
+					<li>Arrange the block into vertices.</li>
 					<li>Render the arranged text.</li>
 				</ol>
 				<p>You can write your own parser to create the tokens from any format you want, or create the tokens directly.</p>
@@ -121,18 +137,15 @@
 						<a href="modules.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="modules/Styles.html">Styles</a>
+						<a href="modules/InternalTypes.html">Internal<wbr>Types</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="modules/Tokens.html">Tokens</a>
+						<a href="modules/Styles.html">Styles</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#HtmlTokenizer" class="tsd-kind-icon">Html<wbr>Tokenizer</a>
-					</li>
 					<li class=" tsd-kind-variable">
 						<a href="modules.html#defaultStyle" class="tsd-kind-icon">default<wbr>Style</a>
 					</li>
@@ -140,10 +153,13 @@
 						<a href="modules.html#arrangeBlock" class="tsd-kind-icon">arrange<wbr>Block</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="modules.html#renderArrangedText" class="tsd-kind-icon">render<wbr>Arranged<wbr>Text</a>
+						<a href="modules.html#drawArrangedText" class="tsd-kind-icon">draw<wbr>Arranged<wbr>Text</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="modules.html#renderVertex" class="tsd-kind-icon">render<wbr>Vertex</a>
+						<a href="modules.html#drawVertex" class="tsd-kind-icon">draw<wbr>Vertex</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#parseHtmlString" class="tsd-kind-icon">parse<wbr>Html<wbr>String</a>
 					</li>
 				</ul>
 			</nav>
