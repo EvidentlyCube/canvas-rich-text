@@ -47,6 +47,9 @@ textarea.value = defaultText;
 Array.from(document.getElementsByTagName('input')).forEach(x => {
 	x.addEventListener('input', () => redraw());
 });
+Array.from(document.getElementsByTagName('select')).forEach(x => {
+	x.addEventListener('input', () => redraw());
+});
 
 textarea.addEventListener('input', () => redraw());
 
@@ -77,42 +80,77 @@ function redraw() {
 	const wrapWidth = parseInt(getInput('wrap-width'));
 	const drawX = parseInt(getInput('draw-x'));
 	const drawY = parseInt(getInput('draw-y'));
+	const textAlign = getInput('text-align') as any;
 	const tokenizedBlock = CanvasRichText.HtmlTokenizer.tokenizeString(textarea.value, {
 		spaceWidth: parseInt(getInput('space-width')),
 		width: wrapWidth,
 		lineSpacing: parseInt(getInput('line-spacing')),
-		newLine: "space"
+		newLine: getInput('new-line') as any,
+		whiteSpace: getInput('white-space') as any,
+		textAlign: textAlign
 	});
 	const arrangedText = CanvasRichText.arrangeBlock(tokenizedBlock);
 
+	const pullToCorner = getInput('pull-to-top-left');
+	const offsetX = pullToCorner ? -arrangedText.x : 0;
+	const offsetY = pullToCorner ? -arrangedText.y : 0;
+	const finalDrawX = drawX + arrangedText.x + offsetX;
+	const finalDrawY = drawY + arrangedText.y + offsetY;
+
 	context.clearRect(0, 0, 500, 500);
-	context.beginPath();
-	context.strokeStyle = "#FF0000";
-	context.setLineDash([5, 5]);
-	context.moveTo(wrapWidth + drawX, drawY);
-	context.lineTo(wrapWidth + drawX, drawY + arrangedText.height);
-	context.stroke();
 
-	context.beginPath();
-	context.strokeStyle = "#0000FF";
-	context.setLineDash([3, 3]);
-	context.moveTo(drawX, drawY);
-	context.lineTo(drawX + arrangedText.width, drawY);
-	context.lineTo(drawX + arrangedText.width, drawY + arrangedText.height);
-	context.lineTo(drawX, drawY + arrangedText.height);
-	context.lineTo(drawX, drawY);
-	context.stroke();
+	if (getInput('show-vertices')) {
+		context.fillStyle = "#CCFFFF"
+		for (const vertex of arrangedText.vertices) {
+			context.fillRect(drawX + offsetX + vertex.x, drawY + offsetY + vertex.y, vertex.width, vertex.height);
+		}
+	}
 
-	context.fillStyle = "#CCFFFF"
-	console.log(arrangedText);
-	for (const vertex of arrangedText.vertices) {
-		context.fillRect(drawX + vertex.x, drawY + vertex.y, vertex.width, vertex.height);
+	if (getInput('show-render-bounds')) {
+		context.beginPath();
+		context.strokeStyle = "#0000FF";
+		context.setLineDash([3, 3]);
+		context.moveTo(finalDrawX, finalDrawY);
+		context.lineTo(finalDrawX + arrangedText.width, finalDrawY);
+		context.lineTo(finalDrawX + arrangedText.width, finalDrawY + arrangedText.height);
+		context.lineTo(finalDrawX, finalDrawY + arrangedText.height);
+		context.lineTo(finalDrawX, finalDrawY);
+		context.stroke();
+	}
+
+	if (getInput('show-word-wrap-edge')) {
+		context.beginPath();
+		context.strokeStyle = "#FF0000";
+		context.setLineDash([5, 5]);
+		const leftX = wrapWidth + drawX + offsetX;
+		const rightX = drawX + offsetX;
+
+		switch(textAlign) {
+			case 'left':
+				context.moveTo(leftX, 0);
+				context.lineTo(leftX, 500);
+				context.stroke();
+				break;
+			case 'center':
+				context.moveTo(leftX, 0);
+				context.lineTo(leftX, 500);
+				context.stroke();
+				context.moveTo(rightX, 0);
+				context.lineTo(rightX, 500);
+				context.stroke();
+				break;
+			case 'right':
+				context.moveTo(rightX, 0);
+				context.lineTo(rightX, 500);
+				context.stroke();
+				break;
+		}
 	}
 
 	CanvasRichText.renderArrangedText(
 		arrangedText,
 		context,
-		drawX,
-		drawY,
+		drawX + offsetX,
+		drawY + offsetY,
 	);
 }

@@ -87,9 +87,11 @@
 		<span>Draw Y:</span>
 		<input type="number" id="draw-y" value="0"/>
 	</label>
+
+	<h4>Default style - block:</h4>
 	<label class="label" for="wrap-width">
-		<span>Wrap width:</span>
-		<input type="number" id="wrap-width" value="500"/>
+		<span>Width:</span>
+		<input type="number" id="wrap-width" value="450"/>
 	</label>
 	<label class="label" for="space-width">
 		<span>Space width:</span>
@@ -97,10 +99,33 @@
 	</label>
 	<label class="label" for="line-spacing">
 		<span>Line spacing:</span>
-		<input type="number" id="line-spacing" value="20"/>
+		<input type="number" id="line-spacing" value="10"/>
+	</label>
+	<label class="label" for="white-space">
+		<span>White Space</span>
+		<select id="white-space">
+			<option value="collapse-all" selected>collapse-all</option>
+			<option value="collapse-outer">collapse-outer</option>
+		</select>
+	</label>
+	<label class="label" for="text-align">
+		<span>Text Align</span>
+		<select id="text-align">
+			<option value="left" selected>left</option>
+			<option value="center">center</option>
+			<option value="right">right</option>
+		</select>
+	</label>
+	<label class="label" for="new-line">
+		<span>New Line</span>
+		<select id="new-line">
+			<option value="space" selected>space</option>
+			<option value="ignore">ignore</option>
+			<option value="preserve">preserve</option>
+		</select>
 	</label>
 
-	<h4>Default style:</h4>
+	<h4>Default style - text:</h4>
 	<label class="label" for="color">
 		<span>Text color:</span>
 		<input type="color" id="color" value="#000000"/>
@@ -113,130 +138,72 @@
 		<span>Font family:</span>
 		<input type="text" id="font-family" value="&quot;Open Sans&quot;, Arial, sans-serif"/>
 	</label>
-	<label class="label">
-		Font style:
-		<div class="list">
-			<label class="label" for="font-style-normal">
-				normal
-				<input type="radio" id="font-style-normal" value="normal" name="font-style" checked>
-			</label>
-			<label class="label" for="font-style-italic">
-				italic
-				<input type="radio" id="font-style-italic" value="italic" name="font-style">
-			</label>
-		</div>
+
+	<label class="label" for="font-style">
+		<span>Font style:</span>
+		<select id="font-style">
+			<option value="normal" selected>normal</option>
+			<option value="italic">italic</option>
+		</select>
 	</label>
-	<label class="label">
-		Font weight:
-		<div class="list">
-			<label class="label" for="font-weight-lighter">
-				lighter
-				<input type="radio" id="font-weight-lighter" value="lighter" name="font-weight" checked>
-			</label>
-			<label class="label" for="font-weight-normal">
-				normal
-				<input type="radio" id="font-weight-normal" value="normal" name="font-weight" checked>
-			</label>
-			<label class="label" for="font-weight-bold">
-				bold
-				<input type="radio" id="font-weight-bold" value="bold" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-bolder">
-				bolder
-				<input type="radio" id="font-weight-bolder" value="bolder" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-100">
-				100
-				<input type="radio" id="font-weight-100" value="100" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-200">
-				200
-				<input type="radio" id="font-weight-200" value="200" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-300">
-				300
-				<input type="radio" id="font-weight-300" value="300" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-400">
-				400
-				<input type="radio" id="font-weight-400" value="400" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-500">
-				500
-				<input type="radio" id="font-weight-500" value="500" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-600">
-				600
-				<input type="radio" id="font-weight-600" value="600" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-700">
-				700
-				<input type="radio" id="font-weight-700" value="700" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-800">
-				800
-				<input type="radio" id="font-weight-800" value="800" name="font-weight">
-			</label>
-			<label class="label" for="font-weight-900">
-				900
-				<input type="radio" id="font-weight-900" value="900" name="font-weight">
-			</label>
-		</div>
+	<label class="label" for="font-weight">
+		<span>Font weight:</span>
+		<select id="font-weight">
+			<option value="lighter">lighter</option>
+			<option value="normal" selected>normal</option>
+			<option value="bold">bold</option>
+			<option value="bolder">bolder</option>
+			<option value="100">100</option>
+			<option value="200">200</option>
+			<option value="300">300</option>
+			<option value="400">400</option>
+			<option value="500">500</option>
+			<option value="600">600</option>
+			<option value="700">700</option>
+			<option value="800">800</option>
+			<option value="900">900</option>
+		</select>
 	</label>
-	<label class="label">
-		Font stretches:
-		<div class="list">
-			<label class="label" for="font-stretch-ultra-condensed">
-				ultra-condensed
-				<input type="radio" id="font-stretch-ultra-condensed" value="ultra-condensed" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-extra-condensed">
-				extra-condensed
-				<input type="radio" id="font-stretch-extra-condensed" value="extra-condensed" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-condensed">
-				condensed
-				<input type="radio" id="font-stretch-condensed" value="condensed" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-semi-condensed">
-				semi-condensed
-				<input type="radio" id="font-stretch-semi-condensed" value="semi-condensed" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-normal">
-				normal
-				<input type="radio" id="font-stretch-normal" value="normal" name="font-stretch" checked>
-			</label>
-			<label class="label" for="font-stretch-semi-expanded">
-				semi-expanded
-				<input type="radio" id="font-stretch-semi-expanded" value="semi-expanded" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-expanded">
-				expanded
-				<input type="radio" id="font-stretch-expanded" value="expanded" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-extra-expanded">
-				extra-expanded
-				<input type="radio" id="font-stretch-extra-expanded" value="extra-expanded" name="font-stretch">
-			</label>
-			<label class="label" for="font-stretch-ultra-expanded">
-				ultra-expanded
-				<input type="radio" id="font-stretch-ultra-expanded" value="ultra-expanded" name="font-stretch">
-			</label>
-		</div>
+	<label class="label" for="font-stretch">
+		<span>Font stretch:</span>
+		<select id="font-stretch">
+			<option value="ultra-condensed">ultra-condensed</option>
+			<option value="extra-condensed" selected>extra-condensed</option>
+			<option value="condensed">condensed</option>
+			<option value="semi-condensed">semi-condensed</option>
+			<option value="normal">normal</option>
+			<option value="semi-expanded">semi-expanded</option>
+			<option value="expanded">expanded</option>
+			<option value="extra-expanded">extra-expanded</option>
+			<option value="ultra-expanded">ultra-expanded</option>
+		</select>
 	</label>
-	<label class="label">
-		Font variants:
-		<div class="list">
-			<label class="label" for="font-variant-normal">
-				normal
-				<input type="radio" id="font-variant-normal" value="normal" name="font-variant" checked>
-			</label>
-			<label class="label" for="font-variant-small-caps">
-				small-caps
-				<input type="radio" id="font-variant-small-caps" value="small-caps" name="font-variant">
-			</label>
-		</div>
+	<label class="label" for="font-variant">
+		<span>Font variant:</span>
+		<select id="font-variant">
+			<option value="normal" selected>normal</option>
+			<option value="small-caps">small-caps</option>
+		</select>
 	</label>
+
+	<h4>Debug options:</h4>
+	<label class="label" for="show-vertices">
+		<span>Show vertices:</span>
+		<input type="checkbox" id="show-vertices">
+	</label>
+	<label class="label" for="show-render-bounds">
+		<span>Show render bounds:</span>
+		<input type="checkbox" id="show-render-bounds">
+	</label>
+	<label class="label" for="show-word-wrap-edge">
+		<span>Show word wrap edge:</span>
+		<input type="checkbox" id="show-word-wrap-edge">
+	</label>
+	<label class="label" for="pull-to-top-left">
+		<span>Pull to top-left:</span>
+		<input type="checkbox" id="pull-to-top-left">
+	</label>
+
 </div>
 
 <script type="module" src="/demo.ts"></script>
