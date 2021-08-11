@@ -36,7 +36,7 @@ const defaultText = `Hello!<br/>
 	<span family="fantasy">cursive</span>
 </p>
 <p variant="small-caps">Very small caps</p>
-` && "as Hlqp";
+` ;//&& "as Hlqp";
 
 const canvas = document.getElementsByTagName('canvas')[0]!;
 const context = canvas.getContext('2d')!;
@@ -81,7 +81,7 @@ function redraw() {
 		spaceWidth: parseInt(getInput('space-width')),
 		width: wrapWidth,
 		lineSpacing: parseInt(getInput('line-spacing')),
-		newLine: "preserve"
+		newLine: "space"
 	});
 	const arrangedText = CanvasRichText.arrangeBlock(tokenizedBlock);
 

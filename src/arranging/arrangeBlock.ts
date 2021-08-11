@@ -1,6 +1,15 @@
-import {Block, InlineText, RichTextArrangedRender, RichTextVertex} from "../common";
+import {Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex} from "../common";
 import {MeasureTextCallback} from "../rendering/internal";
 import {StyleOptions} from "../StyleOptions";
+
+function isPieceWhitespace(piece: InlineTextPiece) {
+	const char = piece.text.charAt(0);
+
+	return char === "\u0020" // space
+		|| char === "\u0009" // tab
+		|| char === "\u000B" // line tabulation
+		|| char === "\u000C"; // form feed
+}
 
 export function arrangeBlocks(blocks: Block, measureText: MeasureTextCallback): RichTextArrangedRender {
 	const vertices: RichTextVertex[] = [];
@@ -60,7 +69,7 @@ function arrangeInlineText(
 
 	for (const piece of text.pieces) {
 		const isNewline = piece.text.charAt(0) === "\n";
-		const isWhitespace = piece.text.charAt(0) === ' ';
+		const isWhitespace = isPieceWhitespace(piece);
 
 		if (isWhitespace || (isNewline && blockStyle.newLine === 'space')) {
 			canBreakWord = true;
@@ -109,13 +118,12 @@ function arrangeInlineText(
 			remainingWhiteSpace = 0;
 			y += currentLine.height + blockStyle.lineSpacing;
 
-			nextRenderPosition.x = 0;
+			nextRenderPosition.x = measure.width;
 			nextRenderPosition.y = y;
 
 			currentLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 			lines.push(currentLine);
 		} else {
-			const old = nextRenderPosition.x;
 			nextRenderPosition.x = x + measure.width;
 		}
 

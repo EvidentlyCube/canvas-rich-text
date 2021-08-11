@@ -61,6 +61,7 @@ function arrangeAscent(block: Block) {
 }
 
 function assertResult(result: RichTextArrangedRender, length: number, x: number, y: number, width: number, height: number) {
+	console.log(result);
 	assert.lengthOf(result.vertices, length);
 	assert.equal(result.x, x);
 	assert.equal(result.y, y);
@@ -214,6 +215,18 @@ describe("arrangeBlock", () => {
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 20, 0);
 		});
+
+		it('Text after broken line continues with regular spacing', () => {
+			const result = arrange(bs(
+				{width: 50},
+				tps('Wo', ' ', 'rd', ' ', 'mo', ' ', 're')
+			));
+			assertResult(result, 4, 0, 0, 45, 25);
+			assertWordVertex(result.vertices[0], 0, 0);
+			assertWordVertex(result.vertices[1], 25, 0);
+			assertWordVertex(result.vertices[2], 0, 15);
+			assertWordVertex(result.vertices[3], 25, 15);
+		})
 	});
 	describe('textAlign', () => {
 		it('Centers single word', () => {
@@ -330,6 +343,17 @@ describe("arrangeBlock", () => {
 			assertResult(result, 2, 0, 0, 95, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 55, 0);
+		});
+
+		it('"space" with line break should still work correctly if tab appears', () => {
+			const result = arrange(bs(
+				{newLine: "space", width: 60},
+				tps('word', "\n", "\t", 'word')
+			));
+
+			assertResult(result, 2, 0, 0, 40, 25);
+			assertWordVertex(result.vertices[0], 0, 0);
+			assertWordVertex(result.vertices[1], 0, 15);
 		});
 	});
 	describe('ascent', () => {
