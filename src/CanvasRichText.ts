@@ -36,5 +36,5 @@ export function renderArrangedText(render: RichTextArrangedRender, context: Canv
 
 export function renderVertex(vertex: RichTextVertex, context: CanvasRenderingContext2D, x: number, y: number): void {
 	configureCanvas(vertex.style, context);
-	context.fillText(vertex.text, vertex.x + x, vertex.y + y);
+	context.fillText(vertex.text, vertex.x + x + vertex.drawOffsetX, vertex.y + y + vertex.drawOffsetY);
 }

@@ -54,8 +54,8 @@ function arrangeAscent(block: Block) {
 			width: WIDTH * x.text.length,
 			height: HEIGHT,
 			xOffset: 0,
-			yOffset: 0,
-			ascent: x.text.length
+			yOffset: x.text.length,
+			ascent: x.text.length * 2
 		}
 	});
 }
@@ -333,14 +333,25 @@ describe("arrangeBlock", () => {
 		});
 	});
 	describe('ascent', () => {
-		it('Max ascent should be added to Y offset position to ensure proper alignment to baseline', () => {
+		it("Ascent is applied correctly", () => {
 			const result = arrangeAscent(b(tps(
 				'w', 'or', 'ded'
 			)));
 
-			assertResult(result, 3, 0, 0, 60, 10);
-			assertWordVertex(result.vertices[0], 0, 0, {offsetY: 3});
-			assertWordVertex(result.vertices[1], 10, 0, {offsetY: 3});
+			// Y is the actual "physical" position where the text top-left corner will be on the canvas
+			// drawOffsetY is the offset that fillText must be called with, for the text to be
+			//   placed correctly, which can vary widldly depending on selected baseline
+
+			// Gist is:
+			//  - Y = position + difference between vertex's ascent and line's largest ascent
+			//  - drawOffsetY = vertex's own ascent
+
+			// This test was pretty much reverse-engineered, first a correct solution was found
+			// by testing in the demo, then a test was written to reproduce its results
+
+			assertResult(result, 3, 0, 0, 60, 14);
+			assertWordVertex(result.vertices[0], 0, 4, {offsetY: 1});
+			assertWordVertex(result.vertices[1], 10, 2, {offsetY: 2});
 			assertWordVertex(result.vertices[2], 30, 0, {offsetY: 3});
 		});
 	});

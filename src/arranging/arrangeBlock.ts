@@ -56,6 +56,7 @@ function arrangeInlineText(
 	let canBreakWord = false;
 	let isLineStart = true;
 	let remainingWhiteSpace = 0;
+	let vertexToAscent = new Map<RichTextVertex, number>();
 
 	for (const piece of text.pieces) {
 		const isNewline = piece.text.charAt(0) === "\n";
@@ -99,7 +100,6 @@ function arrangeInlineText(
 		}
 
 		const measure = measureText(piece);
-		console.log(piece.text, measure);
 		let x = nextRenderPosition.x + remainingWhiteSpace;
 		let y = nextRenderPosition.y;
 
@@ -121,15 +121,17 @@ function arrangeInlineText(
 
 		const vertex: RichTextVertex = {
 			type: "word",
-			x: x + measure.xOffset,
-			y: y + measure.yOffset,
-			drawOffsetX: 0,
-			drawOffsetY: 0,
+			x: x,
+			y: y,
+			drawOffsetX: measure.xOffset,
+			drawOffsetY: measure.yOffset,
 			width: measure.width,
 			height: measure.height,
 			style: piece.style,
 			text: piece.text,
 		};
+
+		vertexToAscent.set(vertex, measure.ascent);
 
 		currentLine.vertices.push(vertex);
 		currentLine.width += remainingWhiteSpace + vertex.width;
@@ -148,7 +150,7 @@ function arrangeInlineText(
 
 	for (const line of lines) {
 		for (const vertex of line.vertices) {
-			vertex.drawOffsetY += currentLine.maxAscent;
+			vertex.y += currentLine.maxAscent - vertexToAscent.get(vertex)!;
 		}
 	}
 

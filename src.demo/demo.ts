@@ -36,7 +36,7 @@ const defaultText = `Hello!<br/>
 	<span family="fantasy">cursive</span>
 </p>
 <p variant="small-caps">Very small caps</p>
-` && "Hello";
+` && "as Hlqp";
 
 const canvas = document.getElementsByTagName('canvas')[0]!;
 const context = canvas.getContext('2d')!;
@@ -83,9 +83,7 @@ function redraw() {
 		lineSpacing: parseInt(getInput('line-spacing')),
 		newLine: "preserve"
 	});
-	console.log(tokenizedBlock);
 	const arrangedText = CanvasRichText.arrangeBlock(tokenizedBlock);
-	console.log(arrangedText);
 
 	context.clearRect(0, 0, 500, 500);
 	context.beginPath();
@@ -104,6 +102,12 @@ function redraw() {
 	context.lineTo(drawX, drawY + arrangedText.height);
 	context.lineTo(drawX, drawY);
 	context.stroke();
+
+	context.fillStyle = "#CCFFFF"
+	console.log(arrangedText);
+	for (const vertex of arrangedText.vertices) {
+		context.fillRect(drawX + vertex.x, drawY + vertex.y, vertex.width, vertex.height);
+	}
 
 	CanvasRichText.renderArrangedText(
 		arrangedText,
