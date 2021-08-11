@@ -1,6 +1,8 @@
-import { arrangeBlocks } from "./arranging/arrangeBlock";
-import { Block, RichTextArrangedRender } from "./common";
 import {StyleOptions} from "./StyleOptions";
+import {Block, RichTextArrangedRender, RichTextVertex} from "./common";
+import {arrangeBlocks} from "./arranging/arrangeBlock";
+import {measureText} from "./rendering/measureText";
+import {configureCanvas} from "./rendering/configureCanvas";
 
 /**
  * The default style. You can modify this to affect how the text will be rendered.
@@ -22,6 +24,17 @@ export const defaultStyle: StyleOptions = {
 	newLine: 'preserve'
 };
 
-// export function arrangeBlock(block: Block): RichTextArrangedRender {
-	// const render = arrangeBlocks(block, )
-// } 
+export function arrangeBlock(block: Block): RichTextArrangedRender {
+	return arrangeBlocks(block, measureText);
+}
+
+export function renderArrangedText(render: RichTextArrangedRender, context: CanvasRenderingContext2D, x: number, y: number): void {
+	for (const vertex of render.vertices) {
+		renderVertex(vertex, context, x, y);
+	}
+}
+
+export function renderVertex(vertex: RichTextVertex, context: CanvasRenderingContext2D, x: number, y: number): void {
+	configureCanvas(vertex.style, context);
+	context.fillText(vertex.text, vertex.x + x, vertex.y + y);
+}
