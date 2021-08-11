@@ -73,7 +73,7 @@ function redraw() {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
 	CanvasRichText.defaultStyle.color = getInput('color');
-	CanvasRichText.defaultStyle.fontSize = getInput('font-size') + "px";
+	CanvasRichText.defaultStyle.fontSize = parseInt(getInput('font-size'));
 	CanvasRichText.defaultStyle.fontStyle = getInput('font-style') as any;
 	CanvasRichText.defaultStyle.fontWeight = getInput('font-weight') as any;
 	CanvasRichText.defaultStyle.fontStretch = getInput('font-stretch') as any;
@@ -84,7 +84,7 @@ function redraw() {
 	const drawX = parseInt(getInput('draw-x'));
 	const drawY = parseInt(getInput('draw-y'));
 	const textAlign = getInput('text-align') as any;
-	const tokenizedBlock = CanvasRichText.HtmlTokenizer.tokenizeString(textarea.value, {
+	const tokenizedBlock = CanvasRichText.parseHtmlString(textarea.value, {
 		spaceWidth: parseInt(getInput('space-width')),
 		width: wrapWidth,
 		lineSpacing: parseInt(getInput('line-spacing')),
@@ -150,7 +150,7 @@ function redraw() {
 		}
 	}
 
-	CanvasRichText.renderArrangedText(
+	CanvasRichText.drawArrangedText(
 		arrangedText,
 		context,
 		drawX + offsetX,
