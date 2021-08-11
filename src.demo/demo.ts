@@ -36,7 +36,7 @@ const defaultText = `Hello!<br/>
 	<span family="fantasy">cursive</span>
 </p>
 <p variant="small-caps">Very small caps</p>
-`;
+` && "Hello";
 
 const canvas = document.getElementsByTagName('canvas')[0]!;
 const context = canvas.getContext('2d')!;
@@ -77,12 +77,15 @@ function redraw() {
 	const wrapWidth = parseInt(getInput('wrap-width'));
 	const drawX = parseInt(getInput('draw-x'));
 	const drawY = parseInt(getInput('draw-y'));
-	const tokens = CanvasRichText.HtmlTokenizer.tokenizeString(textarea.value);
-	const arrangedText = CanvasRichText.arrangeText(tokens, {
-		wordWrapWidth: wrapWidth,
+	const tokenizedBlock = CanvasRichText.HtmlTokenizer.tokenizeString(textarea.value, {
 		spaceWidth: parseInt(getInput('space-width')),
+		width: wrapWidth,
 		lineSpacing: parseInt(getInput('line-spacing')),
+		newLine: "preserve"
 	});
+	console.log(tokenizedBlock);
+	const arrangedText = CanvasRichText.arrangeBlock(tokenizedBlock);
+	console.log(arrangedText);
 
 	context.clearRect(0, 0, 500, 500);
 	context.beginPath();
