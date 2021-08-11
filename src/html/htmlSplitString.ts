@@ -1,17 +1,23 @@
 
+export enum HtmlTokenType {
+	Text = 0,
+	OpenTag = 1,
+	CloseTag = 2
+}
+
 interface HtmlTokenText {
-	type: 0,
+	type: HtmlTokenType.Text,
 	text: string;
 }
 
 interface HtmlTokenOpenTag {
-	type: 1,
+	type: HtmlTokenType.OpenTag,
 	tag: string;
 	style: Record<string, string>;
 }
 
 interface HtmlTokenCloseTag {
-	type: 2,
+	type: HtmlTokenType.CloseTag,
 	tag: string;
 }
 
@@ -45,7 +51,7 @@ export function htmlSplitString(text: string): HtmlToken[] {
 				const [,tag, attributesText] = res;
 				if (tag.charAt(0) === '/') {
 					tags.push({
-						type: 2,
+						type: HtmlTokenType.CloseTag,
 						tag: tag.substr(1).toLowerCase()
 					});
 					return tags;
@@ -56,14 +62,14 @@ export function htmlSplitString(text: string): HtmlToken[] {
 						return attrs;
 					}, {});
 				tags.push({
-					type: 1,
+					type: HtmlTokenType.OpenTag,
 					tag: tag.toLowerCase(),
 					style: attributes
 				});
 				// Self-closing tag
 				if (match.charAt(match.length - 2) === '/') {
 					tags.push({
-						type: 2,
+						type: HtmlTokenType.CloseTag,
 						tag: `${tag.toLowerCase()}`
 					});
 				}
@@ -71,7 +77,7 @@ export function htmlSplitString(text: string): HtmlToken[] {
 			}
 
 			tags.push({
-				type: 0,
+				type: HtmlTokenType.Text,
 				text: match
 			});
 			return tags;

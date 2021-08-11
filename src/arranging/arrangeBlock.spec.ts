@@ -3,7 +3,6 @@ import {defaultStyle} from "../CanvasRichText";
 import {assert} from "chai";
 import { Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex } from "../common";
 import { arrangeBlocks } from "./arrangeBlock";
-import { TextMeasure } from "../rendering/internal";
 
 const WIDTH = 10;
 const HEIGHT = 10;
@@ -62,7 +61,6 @@ function arrangeAscent(block: Block) {
 }
 
 function assertResult(result: RichTextArrangedRender, length: number, x: number, y: number, width: number, height: number) {
-	console.log(result);
 	assert.lengthOf(result.vertices, length);
 	assert.equal(result.x, x);
 	assert.equal(result.y, y);
@@ -70,12 +68,16 @@ function assertResult(result: RichTextArrangedRender, length: number, x: number,
 	assert.equal(result.height, height);
 }
 
-function assertWordVertex(vertex: RichTextVertex, x: number, y: number) {
+function assertWordVertex(vertex: RichTextVertex, x: number, y: number, opts?: Partial<{offsetX: number, offsetY: number}>) {
+	opts = {...opts};
+
 	assert.equal('word', vertex.type);
 
 	if (vertex.type === 'word') {
 		assert.equal(vertex.x, x);
 		assert.equal(vertex.y, y);
+		assert.equal(vertex.drawOffsetX, opts.offsetX ?? vertex.drawOffsetX);
+		assert.equal(vertex.drawOffsetY, opts.offsetY ?? vertex.drawOffsetY);
 	}
 }
 
@@ -331,15 +333,23 @@ describe("arrangeBlock", () => {
 		});
 	});
 	describe('ascent', () => {
-		it('Max ascent should be added to Y position to ensure proper alignment to baseline', () => {
+		it('Max ascent should be added to Y offset position to ensure proper alignment to baseline', () => {
 			const result = arrangeAscent(b(tps(
 				'w', 'or', 'ded'
 			)));
 
-			assertResult(result, 3, 0, 3, 60, 10);
-			assertWordVertex(result.vertices[0], 0, 3);
-			assertWordVertex(result.vertices[1], 10, 3);
-			assertWordVertex(result.vertices[2], 30, 3);
+			assertResult(result, 3, 0, 0, 60, 10);
+			assertWordVertex(result.vertices[0], 0, 0, {offsetY: 3});
+			assertWordVertex(result.vertices[1], 10, 0, {offsetY: 3});
+			assertWordVertex(result.vertices[2], 30, 0, {offsetY: 3});
 		});
 	});
+	describe('Multi line text', () => {
+		it('Multiple inline texts are placed one under another', () => {
+			const result = arrange(b(tps('text'), tps('text')));
+			assertResult(result, 2, 0, 0, 40, 25);
+			assertWordVertex(result.vertices[0], 0, 0);
+			assertWordVertex(result.vertices[1], 0, 15);
+		});
+	})
 });

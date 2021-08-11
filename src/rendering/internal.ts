@@ -8,4 +8,4 @@ export interface TextMeasure {
 	ascent: number;
 }
 
-export type MeasureText = (text: InlineTextPiece) => TextMeasure;
+export type MeasureTextCallback = (text: InlineTextPiece) => TextMeasure;

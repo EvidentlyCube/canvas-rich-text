@@ -1,8 +1,8 @@
-import { Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex } from "../common";
-import { MeasureText } from "../rendering/internal";
+import {Block, InlineText, RichTextArrangedRender, RichTextVertex} from "../common";
+import {MeasureTextCallback} from "../rendering/internal";
 import {StyleOptions} from "../StyleOptions";
 
-export function arrangeBlocks(blocks: Block, measureText: MeasureText): RichTextArrangedRender {
+export function arrangeBlocks(blocks: Block, measureText: MeasureTextCallback): RichTextArrangedRender {
 	const vertices: RichTextVertex[] = [];
 
 	arrangeBlock(blocks, 0, measureText, vertices);
@@ -25,7 +25,7 @@ export function arrangeBlocks(blocks: Block, measureText: MeasureText): RichText
 	return {x, y, width, height, vertices};
 }
 
-function arrangeBlock(block: Block, lastBottom: number, measureText: MeasureText, vertices: RichTextVertex[]): number {
+function arrangeBlock(block: Block, lastBottom: number, measureText: MeasureTextCallback, vertices: RichTextVertex[]): number {
 	return block.children.reduce((lastBottom, child) => {
 		if (child.hasOwnProperty('children')) {
 			return arrangeBlock(child as Block, lastBottom, measureText, vertices);
@@ -33,11 +33,6 @@ function arrangeBlock(block: Block, lastBottom: number, measureText: MeasureText
 			return arrangeInlineText(child as InlineText, block.style, lastBottom, measureText, vertices);
 		}
 	}, lastBottom);
-}
-
-interface Coords {
-	right: number;
-	bottom: number;
 }
 
 interface ArrangedLine {
@@ -51,13 +46,13 @@ function arrangeInlineText(
 	text: InlineText,
 	blockStyle: StyleOptions,
 	lastBottom: number,
-	measureText: MeasureText,
+	measureText: MeasureTextCallback,
 	vertices: RichTextVertex[],
 ): number {
 	let currentLine: ArrangedLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 	const lines = [currentLine];
 	const nextRenderPosition = {x: 0, y: lastBottom};
-	
+
 	let canBreakWord = false;
 	let isLineStart = true;
 	let remainingWhiteSpace = 0;
@@ -71,11 +66,11 @@ function arrangeInlineText(
 
 			const old = remainingWhiteSpace;
 			if (blockStyle.whiteSpace === 'collapse-all') {
-				remainingWhiteSpace = isLineStart 
+				remainingWhiteSpace = isLineStart
 					? 0
 					: blockStyle.spaceWidth;
-			
-			} else if(blockStyle.whiteSpace === 'collapse-outer') {
+
+			} else if (blockStyle.whiteSpace === 'collapse-outer') {
 				if (isLineStart) {
 					remainingWhiteSpace = 0;
 				} else {
@@ -84,7 +79,6 @@ function arrangeInlineText(
 			} else {
 				remainingWhiteSpace += piece.text.length * blockStyle.spaceWidth;
 			}
-			console.log(`Space ${old} -> ${remainingWhiteSpace}`);
 			continue;
 		} else if (isNewline) {
 			if (blockStyle.newLine === 'ignore') {
@@ -97,7 +91,7 @@ function arrangeInlineText(
 
 			nextRenderPosition.x = 0;
 			nextRenderPosition.y += currentLine.height + blockStyle.lineSpacing;
-			
+
 			currentLine = {height: 0, width: 0, maxAscent: 0, vertices: []};
 			lines.push(currentLine);
 
@@ -105,6 +99,7 @@ function arrangeInlineText(
 		}
 
 		const measure = measureText(piece);
+		console.log(piece.text, measure);
 		let x = nextRenderPosition.x + remainingWhiteSpace;
 		let y = nextRenderPosition.y;
 
@@ -122,8 +117,6 @@ function arrangeInlineText(
 		} else {
 			const old = nextRenderPosition.x;
 			nextRenderPosition.x = x + measure.width;
-			console.log(`'${piece.text}' at ${x}`);
-			console.log(`Next render: ${old} -> ${nextRenderPosition.x}`);
 		}
 
 		const vertex: RichTextVertex = {
@@ -140,8 +133,7 @@ function arrangeInlineText(
 
 		currentLine.vertices.push(vertex);
 		currentLine.width += remainingWhiteSpace + vertex.width;
-		currentLine.maxAscent = Math.max(currentLine.maxAscent, measure.ascent)
-		console.log(`Line width: ${currentLine.width}`);
+		currentLine.maxAscent = Math.max(currentLine.maxAscent, measure.ascent);
 		currentLine.height = Math.max(currentLine.height, vertex.height);
 		vertices.push(vertex);
 
@@ -154,13 +146,15 @@ function arrangeInlineText(
 		currentLine.width += remainingWhiteSpace;
 	}
 
-	for(const vertex of currentLine.vertices) {
-		vertex.y += currentLine.maxAscent;
+	for (const line of lines) {
+		for (const vertex of line.vertices) {
+			vertex.drawOffsetY += currentLine.maxAscent;
+		}
 	}
 
 	alignLines(lines, blockStyle);
 
-	return 0;
+	return nextRenderPosition.y + currentLine.height + blockStyle.lineSpacing;
 }
 
 function alignLines(lines: ArrangedLine[], blockStyle: StyleOptions) {

@@ -1,6 +1,6 @@
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
-import {htmlSplitString} from "./htmlSplitString";
+import {htmlSplitString, HtmlTokenType} from "./htmlSplitString";
 import {extractStylesFromAttributes} from "./extractStylesFromAttributes";
 import { Block, InlineText } from "../common";
 
@@ -35,6 +35,7 @@ const attributeToStyle: Record<string, keyof StyleOptions> = {
 	style: 'fontStyle',
 	fontstretch: 'fontStretch',
 	stretch: 'fontStretch',
+	color: 'color',
 }
 
 export const HtmlTokenizer = {
@@ -44,7 +45,7 @@ export const HtmlTokenizer = {
 	 * @param options Optional tokenization options. When not provided it uses the options
 	 * as returned by [[createOptions]].
 	 */
-	tokenizeString(text: string, defStyle: Partial<StyleOptions>): Block {
+	tokenizeString(text: string, defStyle?: Partial<StyleOptions>): Block {
 		const style = {...defaultStyle, ...defStyle};
 
 		const rootBlock: Block = {children: [], style};
@@ -59,7 +60,7 @@ export const HtmlTokenizer = {
 
 		for (const htmlToken of htmlSplitString(text)) {
 			switch (htmlToken.type) {
-				case 0:
+				case HtmlTokenType.Text:
 					if (!currentInlineText) {
 						currentInlineText = {pieces: []};
 						currentBlock.children.push(currentInlineText);
@@ -67,13 +68,19 @@ export const HtmlTokenizer = {
 
 					currentInlineText.pieces.push({text: htmlToken.text, style: currentStyle});
 					break;
-				case 1:
+				case HtmlTokenType.OpenTag:
 					if (isBlockTag(htmlToken.tag)) {
 						const newBlock = {children: [], style: currentStyle};
 						currentBlock.children.push(newBlock);
 						blockStack.push(currentBlock);
 						currentBlock = newBlock;
 						currentInlineText = undefined;
+
+					} else if (htmlToken.tag === 'br') {
+						// <br> is a special case that creates a new inline text
+						currentInlineText = undefined
+						break;
+
 					} else {
 						styleStack.push(currentStyle);
 						currentStyle = {...currentStyle, ...getTagStyle(htmlToken.tag)}
@@ -81,7 +88,7 @@ export const HtmlTokenizer = {
 					currentStyle = {...currentStyle, ...extractStylesFromAttributes(htmlToken.style, attributeToStyle)}
 					break;
 
-				case 2:
+				case HtmlTokenType.CloseTag:
 					if (isBlockTag(htmlToken.tag)) {
 						const lastBlock = currentBlock;
 						currentBlock = blockStack.pop()!;
@@ -91,6 +98,10 @@ export const HtmlTokenizer = {
 						if (lastBlock.children.length === 0) {
 							currentBlock.children.splice(currentBlock.children.indexOf(lastBlock), 1);
 						}
+					} else if (htmlToken.tag === 'br') {
+						// Do nothing for <br>
+						break;
+
 					} else {
 						currentStyle = styleStack.pop()!
 					}

@@ -48,7 +48,7 @@ function itAssert(name: string, text: string, expected: Block) {
 	it(name, () => assertCompare(text, expected));
 }
 
-describe("HtmlTokenizer2", () => {
+describe("HtmlTokenizer", () => {
 	describe('Text only cases', () => {
 		itAssert('Empty text', "", b());
 		itAssert('Single word', "word", b(t(tp("word"))));
@@ -168,4 +168,11 @@ describe("HtmlTokenizer2", () => {
 
 		itAssert('Block can provide style', '<p weight="bold">text</p>', b(btps('text', {fontWeight: "bold"})));
 	});
+
+	describe('<br/>', () => {
+		itAssert('<br/> is converted to new inline text block', 'text<br/>text', b(
+			t(tp('text')),
+			t(tp('text'))
+		))
+	})
 });
