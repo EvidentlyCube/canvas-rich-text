@@ -1,6 +1,9 @@
 import * as CanvasRichText from '../src/index';
 
 const defaultText = `Hello!<br/>
+Text
+With
+Newlines
 <p>
 	<b>&lt;b&gt;strong&lt;/b&gt;</b>
 	<strong>&lt;strong&gt;strong&lt;/strong&gt;</strong>
@@ -36,7 +39,7 @@ const defaultText = `Hello!<br/>
 	<span family="fantasy">cursive</span>
 </p>
 <p variant="small-caps">Very small caps</p>
-` ;//&& "as Hlqp";
+`;
 
 const canvas = document.getElementsByTagName('canvas')[0]!;
 const context = canvas.getContext('2d')!;
