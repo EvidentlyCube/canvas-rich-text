@@ -148,6 +148,10 @@ describe("HtmlTokenizer", () => {
 			tp(' '),
 			tp('italic', {fontStyle: 'italic'}),
 		))));
+		itAssert('Style should not be transferred to the next block', '<p size="50">big</p><p>normal</p>', b(
+			bs({fontSize: '50px'}, t(tp('big', {fontSize: '50px'}))),
+			b(t(tp('normal'))),
+		));
 	});
 
 	describe('Style overrides', () => {
@@ -166,7 +170,9 @@ describe("HtmlTokenizer", () => {
 
 		itAssert('Attribute overrides tag style', '<b weight="normal">text</b>', btps('text', {fontWeight: "normal"}));
 
-		itAssert('Block can provide style', '<p weight="bold">text</p>', b(btps('text', {fontWeight: "bold"})));
+		itAssert('Block can provide style', '<p weight="bold">text</p>', b(
+			bs({fontWeight: "bold"}, t(...tps('text', {fontWeight: "bold"})))
+		));
 	});
 
 	describe('<br/>', () => {

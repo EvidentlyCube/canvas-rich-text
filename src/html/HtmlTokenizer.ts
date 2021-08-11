@@ -70,6 +70,9 @@ export const HtmlTokenizer = {
 					break;
 				case HtmlTokenType.OpenTag:
 					if (isBlockTag(htmlToken.tag)) {
+						styleStack.push(currentStyle);
+						currentStyle = {...currentStyle, ...extractStylesFromAttributes(htmlToken.style, attributeToStyle)}
+
 						const newBlock = {children: [], style: currentStyle};
 						currentBlock.children.push(newBlock);
 						blockStack.push(currentBlock);
@@ -79,13 +82,15 @@ export const HtmlTokenizer = {
 					} else if (htmlToken.tag === 'br') {
 						// <br> is a special case that creates a new inline text
 						currentInlineText = undefined
-						break;
 
 					} else {
 						styleStack.push(currentStyle);
-						currentStyle = {...currentStyle, ...getTagStyle(htmlToken.tag)}
+						currentStyle = {
+							...currentStyle,
+							...getTagStyle(htmlToken.tag),
+							...extractStylesFromAttributes(htmlToken.style, attributeToStyle)
+						}
 					}
-					currentStyle = {...currentStyle, ...extractStylesFromAttributes(htmlToken.style, attributeToStyle)}
 					break;
 
 				case HtmlTokenType.CloseTag:
@@ -98,9 +103,10 @@ export const HtmlTokenizer = {
 						if (lastBlock.children.length === 0) {
 							currentBlock.children.splice(currentBlock.children.indexOf(lastBlock), 1);
 						}
+						currentStyle = styleStack.pop()!
+
 					} else if (htmlToken.tag === 'br') {
 						// Do nothing for <br>
-						break;
 
 					} else {
 						currentStyle = styleStack.pop()!
