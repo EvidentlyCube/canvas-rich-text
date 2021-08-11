@@ -3,7 +3,7 @@ export const AllowedWeights = new Set(['100', '200', '300', '400', '500', '600',
 export const AllowedVariants = new Set(['normal', 'small-caps']);
 export const AllowedStretches = new Set(['ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded']);
 export const AllowedTextAligns = new Set(['left', 'center', 'right']);
-export const AllowedWhiteSpace = new Set(['collapse-all', 'preserve-all', 'collapse-outer']);
+export const AllowedWhiteSpace = new Set(['collapse-all', 'collapse-outer']);
 export const AllowedNewLines = new Set(['space', 'ignore', 'preserve']);
 
 export type FontStyle = 'normal' | 'italic';
@@ -19,7 +19,7 @@ export type FontStretch = 'ultra-condensed'
 | 'extra-expanded'
 | 'ultra-expanded';
 export type TextAlign = 'left' | 'center' | 'right';
-export type WhiteSpace = 'collapse-all'|'preserve-all'|'collapse-outer';
+export type WhiteSpace = 'collapse-all'|'collapse-outer';
 export type NewLine = 'space'|'ignore'|'preserve';
 
 export interface StyleOptions {

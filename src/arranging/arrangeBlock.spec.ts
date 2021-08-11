@@ -129,40 +129,7 @@ describe("arrangeBlock", () => {
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 45, 0);
 		});
-		it ('"preserve-all" keeps all white space around and inside', () => {
-			const result = arrange(bs(
-				// Aligning to center to be able to properly gauge no trimming occurred 
-				{width: 200, whiteSpace: 'preserve-all', textAlign: "center"},
-				tps(' ', 'word', '  ', 'word', '   ')
-			));
-			// Total line width is 80 (8 chars) + 30 (6 spaces) = 110
-			// But text width and position of the resulting draw excludes the outer whitespace
-			assertResult(result, 2, 50, 0, 90, 10);
-			assertWordVertex(result.vertices[0], 50, 0);
-			assertWordVertex(result.vertices[1], 100, 0);
-		});
-		it ('"preserve-all" drops white-space at the end when word-wrapping', () => {
-			const result = arrange(bs(
-				// Aligning to right to be able to be able to see that whitespace at the end was dropped 
-				{width: 50, whiteSpace: 'preserve-all', textAlign: "right"},
-				tps('word', '  ', 'word')
-			));
 
-			assertResult(result, 2, 10, 0, 40, 25);
-			assertWordVertex(result.vertices[0], 10, 0);
-			assertWordVertex(result.vertices[1], 10, 15);
-		});
-		it ('"preserve-all" keeps white-space at the end when adding line break', () => {
-			const result = arrange(bs(
-				// Aligning to right to be able to be able to see that whitespace at the end was dropped 
-				{width: 100, whiteSpace: 'preserve-all', textAlign: "right", newLine: 'preserve'},
-				tps('word', '  ', "\n", 'word')
-			));
-
-			assertResult(result, 2, 50, 0, 50, 25);
-			assertWordVertex(result.vertices[0], 50, 0);
-			assertWordVertex(result.vertices[1], 60, 15);
-		});
 		it ('"collapse-outer" keeps all white space around and inside', () => {
 			const result = arrange(bs(
 				// Aligning to center to be able to properly gauge trimming occurred 
@@ -287,18 +254,6 @@ describe("arrangeBlock", () => {
 			assertWordVertex(result.vertices[1], 30, 0);
 			assertWordVertex(result.vertices[2], 10, 15);
 		});
-		it('Align right works fine with whiteSpace: preserve-all', () => {
-			const result = arrange(bs(
-				{textAlign: "right", whiteSpace: 'preserve-all', width: 200},
-				tps(' ', 'w', 'ord', '  ', 'word', '   ')
-			));
-			// Total line width is 80 (8 chars) + 30 (6 spaces) = 110
-			// But text width and position of the resulting draw excludes the outer whitespace
-			assertResult(result, 3, 95, 0, 90, 10);
-			assertWordVertex(result.vertices[0], 95, 0);
-			assertWordVertex(result.vertices[1], 105, 0);
-			assertWordVertex(result.vertices[2], 145, 0);
-		});
 	});
 	describe('css:newLine', () => {
 		it('"preserve" will keep newlines', () => {
@@ -332,17 +287,6 @@ describe("arrangeBlock", () => {
 			assertResult(result, 2, 0, 0, 85, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 45, 0);
-		});
-
-		it('"space" replaces with a single space, will not collapse with whiteSpace=preserve-all', () => {
-			const result = arrange(bs(
-				{newLine: "space", whiteSpace: 'preserve-all'},
-				tps('word', "\n", "\n", "\n", 'word')
-			));
-
-			assertResult(result, 2, 0, 0, 95, 10);
-			assertWordVertex(result.vertices[0], 0, 0);
-			assertWordVertex(result.vertices[1], 55, 0);
 		});
 
 		it('"space" with line break should still work correctly if tab appears', () => {

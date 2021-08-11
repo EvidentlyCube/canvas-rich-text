@@ -95,10 +95,6 @@ function arrangeInlineText(
 				continue;
 			}
 
-			if (blockStyle.whiteSpace === 'preserve-all') {
-				currentLine.width += remainingWhiteSpace;
-			}
-
 			nextRenderPosition.x = 0;
 			nextRenderPosition.y += currentLine.height + blockStyle.lineSpacing;
 
@@ -150,10 +146,6 @@ function arrangeInlineText(
 		remainingWhiteSpace = 0;
 		canBreakWord = false;
 		isLineStart = false;
-	}
-
-	if (blockStyle.whiteSpace === 'preserve-all') {
-		currentLine.width += remainingWhiteSpace;
 	}
 
 	for (const line of lines) {
