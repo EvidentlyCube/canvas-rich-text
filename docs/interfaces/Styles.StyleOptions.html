@@ -66,6 +66,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Style applied to the rich text.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -88,6 +95,12 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#fontStyle" class="tsd-kind-icon">font<wbr>Style</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#fontVariant" class="tsd-kind-icon">font<wbr>Variant</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#fontWeight" class="tsd-kind-icon">font<wbr>Weight</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#lineSpacing" class="tsd-kind-icon">line<wbr>Spacing</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#newLine" class="tsd-kind-icon">new<wbr>Line</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#spaceWidth" class="tsd-kind-icon">space<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#textAlign" class="tsd-kind-icon">text<wbr>Align</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#whiteSpace" class="tsd-kind-icon">white<wbr>Space</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Styles.StyleOptions.html#width" class="tsd-kind-icon">width</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,9 +114,22 @@
 					<div class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L20">StyleOptions.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L80">StyleOptions.ts:80</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Color of the text. Can be one of:</p>
+							<ul>
+								<li>Short HEX form: #FFF</li>
+								<li>Long HEX form: #FF8800</li>
+								<li>rgb(0, 128, 255)</li>
+								<li>rgba(0, 128, 255, 0.5)</li>
+								<li>hsl(200, 100%, 0%)</li>
+								<li>hsla(0, 70%, 100%, 0.3)&#39;,</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontFamily" class="tsd-anchor"></a>
@@ -111,59 +137,199 @@
 					<div class="tsd-signature tsd-kind-icon">font<wbr>Family<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L22">StyleOptions.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L88">StyleOptions.ts:88</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Font family. Can be multiple font families separated by commas. Multi-word families must be enclosed in quotes.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontSize" class="tsd-anchor"></a>
 					<h3>font<wbr>Size</h3>
-					<div class="tsd-signature tsd-kind-icon">font<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">font<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L21">StyleOptions.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L84">StyleOptions.ts:84</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Size of the text in pixels.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontStretch" class="tsd-anchor"></a>
 					<h3>font<wbr>Stretch</h3>
-					<div class="tsd-signature tsd-kind-icon">font<wbr>Stretch<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontStretches" class="tsd-signature-type" data-tsd-kind="Type alias">FontStretches</a></div>
+					<div class="tsd-signature tsd-kind-icon">font<wbr>Stretch<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontStretch" class="tsd-signature-type" data-tsd-kind="Type alias">FontStretch</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L26">StyleOptions.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L104">StyleOptions.ts:104</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Font Stretch (condensed, expanded, normal, etc)</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontStyle" class="tsd-anchor"></a>
 					<h3>font<wbr>Style</h3>
-					<div class="tsd-signature tsd-kind-icon">font<wbr>Style<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontStyles" class="tsd-signature-type" data-tsd-kind="Type alias">FontStyles</a></div>
+					<div class="tsd-signature tsd-kind-icon">font<wbr>Style<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontStyle" class="tsd-signature-type" data-tsd-kind="Type alias">FontStyle</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L23">StyleOptions.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L92">StyleOptions.ts:92</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Font Style (italic or normal)</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontVariant" class="tsd-anchor"></a>
 					<h3>font<wbr>Variant</h3>
-					<div class="tsd-signature tsd-kind-icon">font<wbr>Variant<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontVariants" class="tsd-signature-type" data-tsd-kind="Type alias">FontVariants</a></div>
+					<div class="tsd-signature tsd-kind-icon">font<wbr>Variant<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontVariant" class="tsd-signature-type" data-tsd-kind="Type alias">FontVariant</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L25">StyleOptions.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L100">StyleOptions.ts:100</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Font Variant (small-caps or normal)</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fontWeight" class="tsd-anchor"></a>
 					<h3>font<wbr>Weight</h3>
-					<div class="tsd-signature tsd-kind-icon">font<wbr>Weight<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontWeights" class="tsd-signature-type" data-tsd-kind="Type alias">FontWeights</a></div>
+					<div class="tsd-signature tsd-kind-icon">font<wbr>Weight<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#FontWeight" class="tsd-signature-type" data-tsd-kind="Type alias">FontWeight</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/3c8eb15/src/StyleOptions.ts#L24">StyleOptions.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L96">StyleOptions.ts:96</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Font Weight (bold, light, normal, etc)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="lineSpacing" class="tsd-anchor"></a>
+					<h3>line<wbr>Spacing</h3>
+					<div class="tsd-signature tsd-kind-icon">line<wbr>Spacing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L120">StyleOptions.ts:120</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Space, in pixels, between each line.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="newLine" class="tsd-anchor"></a>
+					<h3>new<wbr>Line</h3>
+					<div class="tsd-signature tsd-kind-icon">new<wbr>Line<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#NewLine" class="tsd-signature-type" data-tsd-kind="Type alias">NewLine</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L141">StyleOptions.ts:141</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>How newline characters are treated:</p>
+							<ul>
+								<li><code>space</code> - they&#39;ll be replaced with spaces</li>
+								<li><code>ignore</code> - they&#39;ll be treated as if there was no character at all</li>
+								<li><code>preserve</code> - will cause a line break, the same as if <br> was there</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="spaceWidth" class="tsd-anchor"></a>
+					<h3>space<wbr>Width</h3>
+					<div class="tsd-signature tsd-kind-icon">space<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L134">StyleOptions.ts:134</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The width of a space character, in pixels.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="textAlign" class="tsd-anchor"></a>
+					<h3>text<wbr>Align</h3>
+					<div class="tsd-signature tsd-kind-icon">text<wbr>Align<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#TextAlign" class="tsd-signature-type" data-tsd-kind="Type alias">TextAlign</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L116">StyleOptions.ts:116</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Alignment of the text</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="whiteSpace" class="tsd-anchor"></a>
+					<h3>white<wbr>Space</h3>
+					<div class="tsd-signature tsd-kind-icon">white<wbr>Space<span class="tsd-signature-symbol">:</span> <a href="../modules/Styles.html#WhiteSpace" class="tsd-signature-type" data-tsd-kind="Type alias">WhiteSpace</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L130">StyleOptions.ts:130</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Rules governing how white spaces are treated:</p>
+							<ul>
+								<li>&#39;collapse-all&#39; - will trim spaces from the start and end of a line, as well as collapse
+									any sequence of more than one whitespace characters in a row, into a single space
+								(the same way HTML treats spaces)</li>
+								<li>&#39;collapse-outer&#39; - will inly trim spaces from the start and end of a line, but keep the
+									spaces between words. Do note that if this results in an automatic line break,
+								the spaces will be trimmed.</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="width" class="tsd-anchor"></a>
+					<h3>width</h3>
+					<div class="tsd-signature tsd-kind-icon">width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/0fff886/src/StyleOptions.ts#L112">StyleOptions.ts:112</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Width of the block. Is ignored for inline elements.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>remark</dt>
+							<dd><p>There is currently nothing stopping you from creating an HTML that
+									contains a child that is wider than its parent. It&#39;ll mostly work but for
+								now it&#39;s best to only set the width for the top-level block.</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -209,21 +375,51 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Styles.StyleOptions.html#fontWeight" class="tsd-kind-icon">font<wbr>Weight</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#lineSpacing" class="tsd-kind-icon">line<wbr>Spacing</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#newLine" class="tsd-kind-icon">new<wbr>Line</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#spaceWidth" class="tsd-kind-icon">space<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#textAlign" class="tsd-kind-icon">text<wbr>Align</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#whiteSpace" class="tsd-kind-icon">white<wbr>Space</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Styles.StyleOptions.html#width" class="tsd-kind-icon">width</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Styles.html#FontStretches" class="tsd-kind-icon">Font<wbr>Stretches</a>
+						<a href="../modules/Styles.html#FontStretch" class="tsd-kind-icon">Font<wbr>Stretch</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Styles.html#FontStyles" class="tsd-kind-icon">Font<wbr>Styles</a>
+						<a href="../modules/Styles.html#FontStyle" class="tsd-kind-icon">Font<wbr>Style</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Styles.html#FontVariants" class="tsd-kind-icon">Font<wbr>Variants</a>
+						<a href="../modules/Styles.html#FontVariant" class="tsd-kind-icon">Font<wbr>Variant</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Styles.html#FontWeights" class="tsd-kind-icon">Font<wbr>Weights</a>
+						<a href="../modules/Styles.html#FontWeight" class="tsd-kind-icon">Font<wbr>Weight</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#NewLine" class="tsd-kind-icon">New<wbr>Line</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#TextAlign" class="tsd-kind-icon">Text<wbr>Align</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#WhiteSpace" class="tsd-kind-icon">White<wbr>Space</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#AllowedNewLines" class="tsd-kind-icon">Allowed<wbr>New<wbr>Lines</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="../modules/Styles.html#AllowedStretches" class="tsd-kind-icon">Allowed<wbr>Stretches</a>
@@ -232,10 +428,16 @@
 						<a href="../modules/Styles.html#AllowedStyles" class="tsd-kind-icon">Allowed<wbr>Styles</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#AllowedTextAligns" class="tsd-kind-icon">Allowed<wbr>Text<wbr>Aligns</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="../modules/Styles.html#AllowedVariants" class="tsd-kind-icon">Allowed<wbr>Variants</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="../modules/Styles.html#AllowedWeights" class="tsd-kind-icon">Allowed<wbr>Weights</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="../modules/Styles.html#AllowedWhiteSpace" class="tsd-kind-icon">Allowed<wbr>White<wbr>Space</a>
 					</li>
 				</ul>
 			</nav>
