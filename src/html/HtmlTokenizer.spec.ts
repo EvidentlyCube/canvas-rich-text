@@ -149,7 +149,7 @@ describe("HtmlTokenizer", () => {
 			tp('italic', {fontStyle: 'italic'}),
 		))));
 		itAssert('Style should not be transferred to the next block', '<p size="50">big</p><p>normal</p>', b(
-			bs({fontSize: '50px'}, t(tp('big', {fontSize: '50px'}))),
+			bs({fontSize: 50}, t(tp('big', {fontSize: 50}))),
 			b(t(tp('normal'))),
 		));
 	});
@@ -159,8 +159,8 @@ describe("HtmlTokenizer", () => {
 		itAssert('Simple weight short form', '<span weight="bold">text</span>', btps('text', {fontWeight: "bold"}));
 		itAssert('Simple style long form', '<span fontStyle="italic">text</span>', btps('text', {fontStyle: "italic"}));
 		itAssert('Simple style short form', '<span style="italic">text</span>', btps('text', {fontStyle: "italic"}));
-		itAssert('Simple size long form', '<span fontSize="24">text</span>', btps('text', {fontSize: "24px"}));
-		itAssert('Simple size short form', '<span size="24">text</span>', btps('text', {fontSize: "24px"}));
+		itAssert('Simple size long form', '<span fontSize="24">text</span>', btps('text', {fontSize: 24}));
+		itAssert('Simple size short form', '<span size="24">text</span>', btps('text', {fontSize: 24}));
 		itAssert('Simple variant long form', '<span fontVariant="small-caps">text</span>', btps('text', {fontVariant: "small-caps"}));
 		itAssert('Simple variant short form', '<span variant="small-caps">text</span>', btps('text', {fontVariant: "small-caps"}));
 		itAssert('Simple stretch long form', '<span fontStretch="expanded">text</span>', btps('text', {fontStretch: "expanded"}));

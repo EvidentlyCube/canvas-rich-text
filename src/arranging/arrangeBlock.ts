@@ -149,7 +149,6 @@ function arrangeInlineText(
 
 	for (const line of lines) {
 		for (const vertex of line.vertices) {
-			const oldY = vertex.y;
 			vertex.y += line.maxAscent - vertexToAscent.get(vertex)!;
 		}
 	}

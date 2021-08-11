@@ -9,7 +9,7 @@ import {configureCanvas} from "./rendering/configureCanvas";
  */
 export const defaultStyle: StyleOptions = {
 	color: 'black',
-	fontSize: '14px',
+	fontSize: 14,
 	fontStyle: 'normal',
 	fontVariant: 'normal',
 	fontWeight: 'normal',

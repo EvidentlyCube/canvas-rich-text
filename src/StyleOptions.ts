@@ -22,9 +22,25 @@ export type TextAlign = 'left' | 'center' | 'right';
 export type WhiteSpace = 'collapse-all'|'collapse-outer';
 export type NewLine = 'space'|'ignore'|'preserve';
 
+/**
+ * Style applied to the rich text.
+ *
+ */
 export interface StyleOptions {
+	/**
+	 * Color of the text. Can be one of:
+	 *  - Short HEX form: #FFF
+	 *  - Long HEX form: #FF8800
+	 *  - rgb(0, 128, 255)
+	 *  - rgba(0, 128, 255, 0.5)
+	 *  - hsl(200, 100%, 0%)
+	 *  - hsla(0, 70%, 100%, 0.3)',
+	 */
 	color: string;
-	fontSize: string;
+	/**
+	 * Size of the text, mus
+	 */
+	fontSize: number;
 	fontFamily: string;
 	fontStyle: FontStyle;
 	fontWeight: FontWeight;

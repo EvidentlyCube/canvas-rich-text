@@ -118,7 +118,7 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 				errorCallback?.(field, value, 'fontSize must be larger than 0');
 				return undefined;
 			}
-			return `${fontSize}px`;
+			return fontSize;
 
 		case "fontFamily":
 			if (value.length === 0) {

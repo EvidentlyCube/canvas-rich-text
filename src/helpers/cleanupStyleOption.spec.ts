@@ -13,13 +13,13 @@ const errorCallback = (field: string, value: string, error: string) => lastError
 describe("cleanupStyleOption", () => {
 	describe('fontSize', () => {
 		it("Numbers >0 with or without PX are valid", () => {
-			assert.equal(cleanupStyleOption("fontSize", "14"), "14px");
-			assert.equal(cleanupStyleOption("fontSize", "7px"), "7px");
-			assert.equal(cleanupStyleOption("fontSize", "0.1px"), "0.1px");
-			assert.equal(cleanupStyleOption("fontSize", "+7.932px"), "7.932px");
+			assert.equal(cleanupStyleOption("fontSize", "14"), 14);
+			assert.equal(cleanupStyleOption("fontSize", "7px"), 7);
+			assert.equal(cleanupStyleOption("fontSize", "0.1px"), 0.1);
+			assert.equal(cleanupStyleOption("fontSize", "+7.932px"), 7.932);
 		});
 		it("Can prefix with +", () => {
-			assert.equal(cleanupStyleOption("fontSize", "+1.23"), "1.23px");
+			assert.equal(cleanupStyleOption("fontSize", "+1.23"), 1.23);
 		});
 		it("Negative numbers are invalid", () => {
 			assert.equal(cleanupStyleOption("fontSize", "-1"), undefined);
