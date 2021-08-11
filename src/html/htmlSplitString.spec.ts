@@ -49,6 +49,13 @@ describe("htmlSplitString", () => {
 		assertText(tags[10], ' ');
 		assertText(tags[11], 'yep');
 	});
+
+	it('Decodes entities', () => {
+		const tags = htmlSplitString('&lt;one&gt;&#60;two&#62;');
+
+		assertLength(tags, 1);
+		assertText(tags[0], '<one><two>');
+	})
 });
 
 function assertLength(givenTags: HtmlToken[], expectedLength: number) {

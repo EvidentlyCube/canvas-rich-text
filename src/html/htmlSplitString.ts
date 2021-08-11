@@ -1,3 +1,4 @@
+import {decodeHtmlEntities} from "./decodeHtmlEntities";
 
 export enum HtmlTokenType {
 	Text = 0,
@@ -78,7 +79,7 @@ export function htmlSplitString(text: string): HtmlToken[] {
 
 			tags.push({
 				type: HtmlTokenType.Text,
-				text: match
+				text: decodeHtmlEntities(match)
 			});
 			return tags;
 		}, [])

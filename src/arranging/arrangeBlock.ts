@@ -65,7 +65,7 @@ function arrangeInlineText(
 	let canBreakWord = false;
 	let isLineStart = true;
 	let remainingWhiteSpace = 0;
-	let vertexToAscent = new Map<RichTextVertex, number>();
+	const vertexToAscent = new Map<RichTextVertex, number>();
 
 	for (const piece of text.pieces) {
 		const isNewline = piece.text.charAt(0) === "\n";
@@ -74,7 +74,6 @@ function arrangeInlineText(
 		if (isWhitespace || (isNewline && blockStyle.newLine === 'space')) {
 			canBreakWord = true;
 
-			const old = remainingWhiteSpace;
 			if (blockStyle.whiteSpace === 'collapse-all') {
 				remainingWhiteSpace = isLineStart
 					? 0
@@ -150,7 +149,8 @@ function arrangeInlineText(
 
 	for (const line of lines) {
 		for (const vertex of line.vertices) {
-			vertex.y += currentLine.maxAscent - vertexToAscent.get(vertex)!;
+			const oldY = vertex.y;
+			vertex.y += line.maxAscent - vertexToAscent.get(vertex)!;
 		}
 	}
 
