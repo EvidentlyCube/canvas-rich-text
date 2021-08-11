@@ -72,12 +72,12 @@ export type NewLine = 'space'|'ignore'|'preserve';
 export interface StyleOptions {
 	/**
 	 * Color of the text. Can be one of:
-	 *  - Short HEX form: #FFF
-	 *  - Long HEX form: #FF8800
-	 *  - rgb(0, 128, 255)
-	 *  - rgba(0, 128, 255, 0.5)
-	 *  - hsl(200, 100%, 0%)
-	 *  - hsla(0, 70%, 100%, 0.3)',
+	 *  - Short HEX form: `#FFF`
+	 *  - Long HEX form: `#FF8800`
+	 *  - `rgb(0, 128, 255)`
+	 *  - `rgba(0, 128, 255, 0.5)`
+	 *  - `hsl(200, 100%, 0%)`
+	 *  - `hsla(0, 70%, 100%, 0.3)`
 	 */
 	color: string;
 	/**
@@ -89,19 +89,19 @@ export interface StyleOptions {
 	 */
 	fontFamily: string;
 	/**
-	 * Font Style (italic or normal)
+	 * Font Style (`italic` or `normal`)
 	 */
 	fontStyle: FontStyle;
 	/**
-	 * Font Weight (bold, light, normal, etc)
+	 * Font Weight (`bold`, `light`, `normal`, etc)
 	 */
 	fontWeight: FontWeight;
 	/**
-	 * Font Variant (small-caps or normal)
+	 * Font Variant (`small-caps` or `normal`)
 	 */
 	fontVariant: FontVariant;
 	/**
-	 * Font Stretch (condensed, expanded, normal, etc)
+	 * Font Stretch (`condensed`, `expanded`, `normal`, etc)
 	 */
 	fontStretch: FontStretch;
 

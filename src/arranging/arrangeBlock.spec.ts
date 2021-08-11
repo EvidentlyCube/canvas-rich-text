@@ -1,22 +1,22 @@
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
 import {assert} from "chai";
-import { Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex } from "../common";
+import { RichTextBlock, RichTextInline, RichTextInlineWord, ArrangedRichText, RichTextVertex } from "../common";
 import { arrangeBlocks } from "./arrangeBlock";
 
 const WIDTH = 10;
 const HEIGHT = 10;
 
-function b(...children: Block["children"]) {
+function b(...children: RichTextBlock["children"]) {
 	return {children, style: defaultStyle};
 }
 
-function bs(style: Partial<StyleOptions>, ...children: Block["children"]): Block {
+function bs(style: Partial<StyleOptions>, ...children: RichTextBlock["children"]): RichTextBlock {
 	return {children, style: {...defaultStyle, ...style}};
 }
 
-function t(...pieces: InlineTextPiece[]) {
-	return {pieces};
+function t(...words: RichTextInlineWord[]) {
+	return {words};
 }
 
 function tp(text: string, style?: Partial<StyleOptions>) {
@@ -26,17 +26,17 @@ function tp(text: string, style?: Partial<StyleOptions>) {
 	};
 }
 
-function tps(...text: (string | Partial<StyleOptions>)[]): InlineText {
+function tps(...text: (string | Partial<StyleOptions>)[]): RichTextInline {
 	const style = {
 		...defaultStyle,
 		...(text.find(x => typeof x !== 'string') as Partial<StyleOptions> ?? {}),
 	};
 
 	return t(...text.map(x => typeof x === 'string' ? tp(x, style) : undefined)
-		.filter(x => !!x) as InlineTextPiece[]);
+		.filter(x => !!x) as RichTextInlineWord[]);
 }
 
-function arrange(block: Block) {
+function arrange(block: RichTextBlock) {
 	return arrangeBlocks(block, x => {
 		return {
 			width: WIDTH * x.text.length,
@@ -48,7 +48,7 @@ function arrange(block: Block) {
 	});
 }
 
-function arrangeAscent(block: Block) {
+function arrangeAscent(block: RichTextBlock) {
 	return arrangeBlocks(block, x => {
 		return {
 			width: WIDTH * x.text.length,
@@ -60,8 +60,7 @@ function arrangeAscent(block: Block) {
 	});
 }
 
-function assertResult(result: RichTextArrangedRender, length: number, x: number, y: number, width: number, height: number) {
-	console.log(result);
+function assertResult(result: ArrangedRichText, length: number, x: number, y: number, width: number, height: number) {
 	assert.lengthOf(result.vertices, length);
 	assert.equal(result.x, x);
 	assert.equal(result.y, y);

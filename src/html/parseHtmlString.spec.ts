@@ -2,36 +2,36 @@ import {assert} from "chai";
 import {describe, it} from 'mocha';
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
-import {HtmlTokenizer} from "./HtmlTokenizer";
-import { Block, InlineText, InlineTextPiece } from "../common";
+import {parseHtmlString} from "./parseHtmlString";
+import {RichTextBlock, RichTextInline, RichTextInlineWord} from "../common";
 
-function bs(style: Partial<StyleOptions>, ...children: Block["children"]): Block {
+function bs(style: Partial<StyleOptions>, ...children: RichTextBlock["children"]): RichTextBlock {
 	return {children, style: {...defaultStyle, ...style}};
 }
 
-function b(...children: Block["children"]): Block {
+function b(...children: RichTextBlock["children"]): RichTextBlock {
 	return {children, style: defaultStyle};
 }
 
-function t(...pieces: InlineTextPiece[]): InlineText {
-	return {pieces};
+function t(...words: RichTextInlineWord[]): RichTextInline {
+	return {words};
 }
 
-function tp(text: string, style?: Partial<StyleOptions>): InlineTextPiece {
+function tp(text: string, style?: Partial<StyleOptions>): RichTextInlineWord {
 	return {
 		text,
 		style: {...defaultStyle, ...(style ?? {})},
 	};
 }
 
-function tps(...text: (string | Partial<StyleOptions>)[]): InlineTextPiece[] {
+function tps(...text: (string | Partial<StyleOptions>)[]): RichTextInlineWord[] {
 	const style = {
 		...defaultStyle,
 		...(text.find(x => typeof x !== 'string') as Partial<StyleOptions> ?? {}),
 	};
 
 	return text.map(x => typeof x === 'string' ? tp(x, style) : undefined)
-		.filter(x => !!x) as InlineTextPiece[];
+		.filter(x => !!x) as RichTextInlineWord[];
 }
 
 function btps(...text: (string | Partial<StyleOptions>)[]) {
@@ -39,16 +39,16 @@ function btps(...text: (string | Partial<StyleOptions>)[]) {
 }
 
 
-function assertCompare(text: string, expected: Block) {
-	const result = HtmlTokenizer.tokenizeString(text, {});
+function assertCompare(text: string, expected: RichTextBlock) {
+	const result = parseHtmlString(text, {});
 	assert.deepEqual(result, expected);
 }
 
-function itAssert(name: string, text: string, expected: Block) {
+function itAssert(name: string, text: string, expected: RichTextBlock) {
 	it(name, () => assertCompare(text, expected));
 }
 
-describe("HtmlTokenizer", () => {
+describe("parseHtmlString", () => {
 	describe('Text only cases', () => {
 		itAssert('Empty text', "", b());
 		itAssert('Single word', "word", b(t(tp("word"))));
@@ -76,14 +76,14 @@ describe("HtmlTokenizer", () => {
 	describe('Inline tags', () => {
 		itAssert('Empty inline tag is ignored', '<span></span>', b());
 		itAssert('Does nothing when no neighbors', '<span>text</span>', btps('text'));
-		itAssert('Inserts new piece', 'in<span>ser</span>ted', btps('in', 'ser', 'ted'));
+		itAssert('Inserts new word', 'in<span>ser</span>ted', btps('in', 'ser', 'ted'));
 		itAssert('Multiple', 'i<span>n</span><span>s</span>e<span>r</span>ted', btps('i', 'n', 's', 'e', 'r', 'ted'));
 	});
 
 	describe('Block tags', () => {
 		itAssert("Empty block is ignored", '<p></p>', b());
 		itAssert("Creates a single block", '<p>block</p>', b(btps('block')));
-		itAssert("Creates a single block with many pieces", '<p>block with pieces</p>', b(btps('block', ' ', 'with', ' ', 'pieces')));
+		itAssert("Creates a single block with many words", '<p>block with words</p>', b(btps('block', ' ', 'with', ' ', 'words')));
 		itAssert('Splits into blocks', '<p>splits</p><p>into</p><p>blocks</p>', b(
 			btps('splits'),
 			btps('into'),
@@ -141,7 +141,7 @@ describe("HtmlTokenizer", () => {
 		itAssert('Styled in block', '<p><b>bold</b></p>', b(btps('bold', {fontWeight: 'bold'})));
 		itAssert('Block in inline-styled', '<b><p>bold</p></b>', b(bs(
 			{fontWeight: 'bold'},
-			t(tp('bold', {fontWeight: 'bold'}))
+			t(tp('bold', {fontWeight: 'bold'})),
 		)));
 		itAssert('Multiple inline in block', '<p><b>bold</b> <em>italic</em></p>', b(b(t(
 			tp('bold', {fontWeight: 'bold'}),
@@ -171,14 +171,14 @@ describe("HtmlTokenizer", () => {
 		itAssert('Attribute overrides tag style', '<b weight="normal">text</b>', btps('text', {fontWeight: "normal"}));
 
 		itAssert('Block can provide style', '<p weight="bold">text</p>', b(
-			bs({fontWeight: "bold"}, t(...tps('text', {fontWeight: "bold"})))
+			bs({fontWeight: "bold"}, t(...tps('text', {fontWeight: "bold"}))),
 		));
 	});
 
 	describe('<br/>', () => {
 		itAssert('<br/> is converted to new inline text block', 'text<br/>text', b(
 			t(tp('text')),
-			t(tp('text'))
-		))
-	})
+			t(tp('text')),
+		));
+	});
 });

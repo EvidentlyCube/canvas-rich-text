@@ -1,4 +1,4 @@
-import { InlineTextPiece } from "../common";
+import { RichTextInlineWord } from "../common";
 
 export interface TextMeasure {
 	xOffset: number;
@@ -8,4 +8,4 @@ export interface TextMeasure {
 	ascent: number;
 }
 
-export type MeasureTextCallback = (text: InlineTextPiece) => TextMeasure;
+export type MeasureTextCallback = (text: RichTextInlineWord) => TextMeasure;

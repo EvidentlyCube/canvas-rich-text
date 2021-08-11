@@ -1,5 +1,5 @@
 import {StyleOptions} from "./StyleOptions";
-import {Block, RichTextArrangedRender, RichTextVertex} from "./common";
+import {RichTextBlock, ArrangedRichText, RichTextVertex} from "./common";
 import {arrangeBlocks} from "./arranging/arrangeBlock";
 import {measureText} from "./rendering/measureText";
 import {configureCanvas} from "./rendering/configureCanvas";
@@ -24,17 +24,36 @@ export const defaultStyle: StyleOptions = {
 	newLine: 'preserve'
 };
 
-export function arrangeBlock(block: Block): RichTextArrangedRender {
+/**
+ * Arranges a Rich Text Block into a format that can then be quickly drawn to canvas.
+ * @param block Block returned from [[parseHtmlString]], or created either manually or from a custom parser
+ */
+export function arrangeBlock(block: RichTextBlock): ArrangedRichText {
 	return arrangeBlocks(block, measureText);
 }
 
-export function renderArrangedText(render: RichTextArrangedRender, context: CanvasRenderingContext2D, x: number, y: number): void {
+/**
+ * Draws the arranged text to the given context at the specified position.
+ * @param render Arranged text to draw, acquired from [[arrangeBlock]]
+ * @param context Canvas context to which to draw
+ * @param x X position to draw to
+ * @param y Y position to draw to
+ */
+export function drawArrangedText(render: ArrangedRichText, context: CanvasRenderingContext2D, x: number, y: number): void {
 	for (const vertex of render.vertices) {
-		renderVertex(vertex, context, x, y);
+		drawVertex(vertex, context, x, y);
 	}
 }
 
-export function renderVertex(vertex: RichTextVertex, context: CanvasRenderingContext2D, x: number, y: number): void {
+/**
+ * Draws a single vertex to the given context at the specified offset position. The vertex uses its internal
+ * position to be drawn, but you can add an optional X/Y offset.
+ * @param vertex Vertex to draw
+ * @param context Canvas context to which to draw
+ * @param xOffset X offset added to the position where the vertex is drawn
+ * @param yOffset Y offset added to the position where the vertex is drawn
+ */
+export function drawVertex(vertex: RichTextVertex, context: CanvasRenderingContext2D, xOffset: number, yOffset: number): void {
 	configureCanvas(vertex.style, context);
-	context.fillText(vertex.text, vertex.x + x + vertex.drawOffsetX, vertex.y + y + vertex.drawOffsetY);
+	context.fillText(vertex.text, vertex.x + xOffset + vertex.drawOffsetX, vertex.y + yOffset + vertex.drawOffsetY);
 }

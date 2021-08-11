@@ -1,9 +1,9 @@
-import {Block, InlineText, InlineTextPiece, RichTextArrangedRender, RichTextVertex} from "../common";
+import {RichTextBlock, RichTextInline, RichTextInlineWord, ArrangedRichText, RichTextVertex} from "../common";
 import {MeasureTextCallback} from "../rendering/internal";
 import {StyleOptions} from "../StyleOptions";
 
-function isPieceWhitespace(piece: InlineTextPiece) {
-	const char = piece.text.charAt(0);
+function isWordWhitespace(word: RichTextInlineWord) {
+	const char = word.text.charAt(0);
 
 	return char === "\u0020" // space
 		|| char === "\u0009" // tab
@@ -11,7 +11,7 @@ function isPieceWhitespace(piece: InlineTextPiece) {
 		|| char === "\u000C"; // form feed
 }
 
-export function arrangeBlocks(blocks: Block, measureText: MeasureTextCallback): RichTextArrangedRender {
+export function arrangeBlocks(blocks: RichTextBlock, measureText: MeasureTextCallback): ArrangedRichText {
 	const vertices: RichTextVertex[] = [];
 
 	arrangeBlock(blocks, 0, measureText, vertices);
@@ -34,12 +34,12 @@ export function arrangeBlocks(blocks: Block, measureText: MeasureTextCallback): 
 	return {x, y, width, height, vertices};
 }
 
-function arrangeBlock(block: Block, lastBottom: number, measureText: MeasureTextCallback, vertices: RichTextVertex[]): number {
+function arrangeBlock(block: RichTextBlock, lastBottom: number, measureText: MeasureTextCallback, vertices: RichTextVertex[]): number {
 	return block.children.reduce((lastBottom, child) => {
 		if (child.hasOwnProperty('children')) {
-			return arrangeBlock(child as Block, lastBottom, measureText, vertices);
+			return arrangeBlock(child as RichTextBlock, lastBottom, measureText, vertices);
 		} else {
-			return arrangeInlineText(child as InlineText, block.style, lastBottom, measureText, vertices);
+			return arrangeInlineText(child as RichTextInline, block.style, lastBottom, measureText, vertices);
 		}
 	}, lastBottom);
 }
@@ -52,7 +52,7 @@ interface ArrangedLine {
 }
 
 function arrangeInlineText(
-	text: InlineText,
+	text: RichTextInline,
 	blockStyle: StyleOptions,
 	lastBottom: number,
 	measureText: MeasureTextCallback,
@@ -67,9 +67,9 @@ function arrangeInlineText(
 	let remainingWhiteSpace = 0;
 	const vertexToAscent = new Map<RichTextVertex, number>();
 
-	for (const piece of text.pieces) {
-		const isNewline = piece.text.charAt(0) === "\n";
-		const isWhitespace = isPieceWhitespace(piece);
+	for (const word of text.words) {
+		const isNewline = word.text.charAt(0) === "\n";
+		const isWhitespace = isWordWhitespace(word);
 
 		if (isWhitespace || (isNewline && blockStyle.newLine === 'space')) {
 			canBreakWord = true;
@@ -83,10 +83,10 @@ function arrangeInlineText(
 				if (isLineStart) {
 					remainingWhiteSpace = 0;
 				} else {
-					remainingWhiteSpace += blockStyle.spaceWidth * piece.text.length;
+					remainingWhiteSpace += blockStyle.spaceWidth * word.text.length;
 				}
 			} else {
-				remainingWhiteSpace += piece.text.length * blockStyle.spaceWidth;
+				remainingWhiteSpace += word.text.length * blockStyle.spaceWidth;
 			}
 			continue;
 		} else if (isNewline) {
@@ -103,7 +103,7 @@ function arrangeInlineText(
 			continue;
 		}
 
-		const measure = measureText(piece);
+		const measure = measureText(word);
 		let x = nextRenderPosition.x + remainingWhiteSpace;
 		let y = nextRenderPosition.y;
 
@@ -130,8 +130,8 @@ function arrangeInlineText(
 			drawOffsetY: measure.yOffset,
 			width: measure.width,
 			height: measure.height,
-			style: piece.style,
-			text: piece.text,
+			style: word.style,
+			text: word.text,
 		};
 
 		vertexToAscent.set(vertex, measure.ascent);
