@@ -11,7 +11,7 @@
         "clean": "rm -rf dist demo",
         "build": "tsc",
         "build:demo": "vite build --outDir ../docs/demo --base ./ --emptyOutDir src.demo",
-        "dev:demo": "vite dev src.demo",
+        "dev:demo": "vite src.demo",
         "docs": "typedoc --options typedoc.ts",
         "test": "mocha",
         "test:watch": "mocha --watch",
