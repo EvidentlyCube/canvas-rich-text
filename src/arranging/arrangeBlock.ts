@@ -122,10 +122,12 @@ function arrangeInlineText(
 			nextRenderPosition.x = x + measure.width;
 		}
 
+		const ascentDiff = measure.maxAscent - measure.ascent;
+		const realAscent = blockStyle.lineHeight === 'static' ? measure.maxAscent : measure.ascent;
 		const vertex: RichTextVertex = {
 			type: "word",
 			x: x,
-			y: y,
+			y: y + (blockStyle.lineHeight === 'static' ? ascentDiff : 0),
 			drawOffsetX: measure.xOffset,
 			drawOffsetY: measure.yOffset,
 			width: measure.width,
@@ -134,12 +136,16 @@ function arrangeInlineText(
 			text: word.text,
 		};
 
-		vertexToAscent.set(vertex, measure.ascent);
+		vertexToAscent.set(vertex, realAscent);
 
 		currentLine.vertices.push(vertex);
 		currentLine.width += remainingWhiteSpace + vertex.width;
-		currentLine.maxAscent = Math.max(currentLine.maxAscent, measure.ascent);
-		currentLine.height = Math.max(currentLine.height, vertex.height);
+		currentLine.maxAscent = Math.max(currentLine.maxAscent, realAscent);
+		if (blockStyle.lineHeight === 'static') {
+			currentLine.height = Math.max(currentLine.height, measure.lineHeight);
+		} else {
+			currentLine.height = Math.max(currentLine.height, measure.height);
+		}
 		vertices.push(vertex);
 
 		remainingWhiteSpace = 0;

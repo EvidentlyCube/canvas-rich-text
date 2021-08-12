@@ -43,6 +43,7 @@ const attributeToStyle: Record<string, keyof StyleOptions> = {
 	whitespace: 'whiteSpace',
 	textalign: 'textAlign',
 	align: 'textAlign',
+	lineheight: 'lineHeight',
 };
 
 /**
@@ -73,8 +74,7 @@ const attributeToStyle: Record<string, keyof StyleOptions> = {
  *  - spaceWidth
  *  - whiteSpace
  *  - textAlign & align
- *
- *
+ *  - lineHeight
  *
  * @param text The text to convert
  * @param styleOverrides The overrides for the default style.

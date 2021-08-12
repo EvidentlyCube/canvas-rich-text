@@ -72,25 +72,27 @@ function redraw() {
 	context.fillStyle = '#DDF8F8';
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
-	CanvasRichText.defaultStyle.color = getInput('color');
-	CanvasRichText.defaultStyle.fontSize = parseInt(getInput('font-size'));
-	CanvasRichText.defaultStyle.fontStyle = getInput('font-style') as any;
-	CanvasRichText.defaultStyle.fontWeight = getInput('font-weight') as any;
-	CanvasRichText.defaultStyle.fontStretch = getInput('font-stretch') as any;
-	CanvasRichText.defaultStyle.fontFamily = getInput('font-family');
-	CanvasRichText.defaultStyle.fontVariant = getInput('font-variant') as any;
 
 	const wrapWidth = parseInt(getInput('wrap-width'));
 	const drawX = parseInt(getInput('draw-x'));
 	const drawY = parseInt(getInput('draw-y'));
 	const textAlign = getInput('text-align') as any;
 	const tokenizedBlock = CanvasRichText.parseHtmlString(textarea.value, {
+		color: getInput('color'),
+		fontSize: parseInt(getInput('font-size')),
+		fontStyle: getInput('font-style') as any,
+		fontWeight: getInput('font-weight') as any,
+		fontStretch: getInput('font-stretch') as any,
+		fontFamily: getInput('font-family'),
+		fontVariant: getInput('font-variant') as any,
+
 		spaceWidth: parseInt(getInput('space-width')),
 		width: wrapWidth,
 		lineSpacing: parseInt(getInput('line-spacing')),
 		newLine: getInput('new-line') as any,
 		whiteSpace: getInput('white-space') as any,
-		textAlign: textAlign
+		textAlign: textAlign,
+		lineHeight: getInput('line-height') as any
 	});
 	const arrangedText = CanvasRichText.arrangeBlock(tokenizedBlock);
 

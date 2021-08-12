@@ -1,8 +1,8 @@
 import {StyleOptions} from "../StyleOptions";
 import {defaultStyle} from "../CanvasRichText";
 import {assert} from "chai";
-import { RichTextBlock, RichTextInline, RichTextInlineWord, ArrangedRichText, RichTextVertex } from "../common";
-import { arrangeBlocks } from "./arrangeBlock";
+import {ArrangedRichText, RichTextBlock, RichTextInline, RichTextInlineWord, RichTextVertex} from "../common";
+import {arrangeBlocks} from "./arrangeBlock";
 
 const WIDTH = 10;
 const HEIGHT = 10;
@@ -41,10 +41,12 @@ function arrange(block: RichTextBlock) {
 		return {
 			width: WIDTH * x.text.length,
 			height: HEIGHT,
+			lineHeight: HEIGHT,
 			xOffset: 0,
 			yOffset: 0,
-			ascent: 0
-		}
+			ascent: 0,
+			maxAscent: 0
+		};
 	});
 }
 
@@ -53,10 +55,34 @@ function arrangeAscent(block: RichTextBlock) {
 		return {
 			width: WIDTH * x.text.length,
 			height: HEIGHT,
+			lineHeight: HEIGHT,
 			xOffset: 0,
 			yOffset: x.text.length,
-			ascent: x.text.length * 2
-		}
+			ascent: x.text.length * 2,
+			maxAscent: x.text.length * 2,
+		};
+	});
+}
+
+const isHangingRegex = /[qypj]/;
+const isTallRegex = /[QAZWSXEDCRFVTGBYHNUJMIKLOPtifjklb]/;
+
+function arrangeSmart(block: RichTextBlock) {
+	return arrangeBlocks(block, x => {
+		const isHanging = isHangingRegex.test(x.text);
+		const isTall = isTallRegex.test(x.text);
+		const baseHeight = x.style.fontSize;
+		const hangingHeight = isHanging ? 2 : 0;
+		const tallHeight = isTall ? 2 : 0;
+		return {
+			width: WIDTH * x.text.length,
+			height: x.style.fontSize + hangingHeight + tallHeight,
+			lineHeight: baseHeight + 4,
+			xOffset: 0,
+			yOffset: 0,
+			ascent: x.style.fontSize + tallHeight,
+			maxAscent: x.style.fontSize + 2,
+		};
 	});
 }
 
@@ -68,7 +94,7 @@ function assertResult(result: ArrangedRichText, length: number, x: number, y: nu
 	assert.equal(result.height, height);
 }
 
-function assertWordVertex(vertex: RichTextVertex, x: number, y: number, opts?: Partial<{offsetX: number, offsetY: number}>) {
+function assertWordVertex(vertex: RichTextVertex, x: number, y: number, opts?: Partial<{ offsetX: number, offsetY: number }>) {
 	opts = {...opts};
 
 	assert.equal('word', vertex.type);
@@ -106,47 +132,47 @@ describe("arrangeBlock", () => {
 		});
 	});
 	describe('style:spaceWidth', () => {
-		for (let spaceWidth = -10; spaceWidth < 20; spaceWidth+= 5) {
-			it(`Value=${spaceWidth}`, () => { 
+		for (let spaceWidth = -10; spaceWidth < 20; spaceWidth += 5) {
+			it(`Value=${spaceWidth}`, () => {
 				const result = arrange(bs(
 					{spaceWidth: spaceWidth},
-					tps('word', ' ', 'word')
+					tps('word', ' ', 'word'),
 				));
 				assertResult(result, 2, 0, 0, 80 + spaceWidth, 10);
 				assertWordVertex(result.vertices[0], 0, 0);
 				assertWordVertex(result.vertices[1], 40 + spaceWidth, 0);
-			})
+			});
 		}
 	});
 	describe('style:whiteSpace', () => {
 		it('"collapse-all" trims white space around and removes duplicate inner whitespace', () => {
 			const result = arrange(bs(
 				{whiteSpace: 'collapse-all'},
-				tps('   ', 'word', '   ', 'word', '   ')
+				tps('   ', 'word', '   ', 'word', '   '),
 			));
 			assertResult(result, 2, 0, 0, 85, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 45, 0);
 		});
 
-		it ('"collapse-outer" keeps all white space around and inside', () => {
+		it('"collapse-outer" keeps all white space around and inside', () => {
 			const result = arrange(bs(
 				// Aligning to center to be able to properly gauge trimming occurred 
 				{width: 200, whiteSpace: 'collapse-outer', textAlign: "center"},
-				tps(' ', 'word', '  ', 'word', '   ')
+				tps(' ', 'word', '  ', 'word', '   '),
 			));
 			// Total line width is 80 (8 chars) + 10 (2 spaces) = 90
 			assertResult(result, 2, 55, 0, 90, 10);
 			assertWordVertex(result.vertices[0], 55, 0);
 			assertWordVertex(result.vertices[1], 105, 0);
 		});
-		
-	})
+
+	});
 	describe('Line breaking', () => {
 		it('Two words, break normally', () => {
 			const result = arrange(bs(
 				{width: 60},
-				tps('Word', ' ', 'Word')
+				tps('Word', ' ', 'Word'),
 			));
 			assertResult(result, 2, 0, 0, 40, 25);
 			assertWordVertex(result.vertices[0], 0, 0);
@@ -156,7 +182,7 @@ describe("arrangeBlock", () => {
 		it('Two words, exact width, no breaking', () => {
 			const result = arrange(bs(
 				{width: 150},
-				tps('Word', ' ', 'Word')
+				tps('Word', ' ', 'Word'),
 			));
 			assertResult(result, 2, 0, 0, 85, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
@@ -166,7 +192,7 @@ describe("arrangeBlock", () => {
 		it('Too long word is not broken', () => {
 			const result = arrange(bs(
 				{width: 30},
-				tps('Word')
+				tps('Word'),
 			));
 			assertResult(result, 1, 0, 0, 40, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
@@ -175,7 +201,7 @@ describe("arrangeBlock", () => {
 		it('Too long word is not broken, even if multi-segment word', () => {
 			const result = arrange(bs(
 				{width: 10},
-				tps('Wo', 'rd')
+				tps('Wo', 'rd'),
 			));
 			assertResult(result, 2, 0, 0, 40, 10);
 			assertWordVertex(result.vertices[0], 0, 0);
@@ -185,20 +211,20 @@ describe("arrangeBlock", () => {
 		it('Text after broken line continues with regular spacing', () => {
 			const result = arrange(bs(
 				{width: 50},
-				tps('Wo', ' ', 'rd', ' ', 'mo', ' ', 're')
+				tps('Wo', ' ', 'rd', ' ', 'mo', ' ', 're'),
 			));
 			assertResult(result, 4, 0, 0, 45, 25);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 25, 0);
 			assertWordVertex(result.vertices[2], 0, 15);
 			assertWordVertex(result.vertices[3], 25, 15);
-		})
+		});
 	});
 	describe('textAlign', () => {
 		it('Centers single word', () => {
 			const result = arrange(bs(
 				{textAlign: 'center', width: 200},
-				t(tp('Word'))
+				t(tp('Word')),
 			));
 			assertResult(result, 1, 80, 0, 40, 10);
 			assertWordVertex(result.vertices[0], 80, 0);
@@ -206,7 +232,7 @@ describe("arrangeBlock", () => {
 		it('Centers single multi-vertex word without space in between', () => {
 			const result = arrange(bs(
 				{textAlign: 'center', width: 200},
-				tps("Wo", 'rd')
+				tps("Wo", 'rd'),
 			));
 			assertResult(result, 2, 80, 0, 40, 10);
 			assertWordVertex(result.vertices[0], 80, 0);
@@ -215,7 +241,7 @@ describe("arrangeBlock", () => {
 		it('Centers multiple words', () => {
 			const result = arrange(bs(
 				{textAlign: 'center', width: 200},
-				tps('Word', ' ', 'and', ' ', 'text')
+				tps('Word', ' ', 'and', ' ', 'text'),
 			));
 			assertResult(result, 3, 40, 0, 120, 10);
 			assertWordVertex(result.vertices[0], 40, 0);
@@ -225,7 +251,7 @@ describe("arrangeBlock", () => {
 		it('Centers with line breaking', () => {
 			const result = arrange(bs(
 				{textAlign: "center", width: 50},
-				tps("a", "bc", ' ', "abcd")
+				tps("a", "bc", ' ', "abcd"),
 			));
 
 			assertResult(result, 3, 5, 0, 40, 25);
@@ -236,16 +262,16 @@ describe("arrangeBlock", () => {
 		it('Centering rounds down', () => {
 			const result = arrange(bs(
 				{textAlign: "center", width: 15},
-				tps("a")
+				tps("a"),
 			));
 
-			assertResult(result, 1,2, 0, 10, 10);
+			assertResult(result, 1, 2, 0, 10, 10);
 			assertWordVertex(result.vertices[0], 2, 0);
 		});
 		it('Align right with line breaking', () => {
 			const result = arrange(bs(
 				{textAlign: "right", width: 50},
-				tps("a", "bc", ' ', "abcd")
+				tps("a", "bc", ' ', "abcd"),
 			));
 
 			assertResult(result, 3, 10, 0, 40, 25);
@@ -258,18 +284,18 @@ describe("arrangeBlock", () => {
 		it('"preserve" will keep newlines', () => {
 			const result = arrange(bs(
 				{newLine: "preserve"},
-				tps('word', "\n", 'word')
+				tps('word', "\n", 'word'),
 			));
 
 			assertResult(result, 2, 0, 0, 40, 25);
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 0, 15);
 		});
-		
+
 		it('"ignore" will replace newlines with nothing', () => {
 			const result = arrange(bs(
 				{newLine: "ignore"},
-				tps('word', "\n", 'word')
+				tps('word', "\n", 'word'),
 			));
 
 			assertResult(result, 2, 0, 0, 80, 10);
@@ -280,7 +306,7 @@ describe("arrangeBlock", () => {
 		it('"space" replaces with a single space, will collapse with whiteSpace=collapse-all', () => {
 			const result = arrange(bs(
 				{newLine: "space", whiteSpace: 'collapse-all'},
-				tps('word', "\n", "\n", "\n", 'word')
+				tps('word', "\n", "\n", "\n", 'word'),
 			));
 
 			assertResult(result, 2, 0, 0, 85, 10);
@@ -291,7 +317,7 @@ describe("arrangeBlock", () => {
 		it('"space" with line break should still work correctly if tab appears', () => {
 			const result = arrange(bs(
 				{newLine: "space", width: 60},
-				tps('word', "\n", "\t", 'word')
+				tps('word', "\n", "\t", 'word'),
 			));
 
 			assertResult(result, 2, 0, 0, 40, 25);
@@ -302,7 +328,7 @@ describe("arrangeBlock", () => {
 	describe('ascent', () => {
 		it("Ascent is applied correctly", () => {
 			const result = arrangeAscent(b(tps(
-				'w', 'or', 'ded'
+				'w', 'or', 'ded',
 			)));
 
 			// Y is the actual "physical" position where the text top-left corner will be on the canvas
@@ -329,5 +355,35 @@ describe("arrangeBlock", () => {
 			assertWordVertex(result.vertices[0], 0, 0);
 			assertWordVertex(result.vertices[1], 0, 15);
 		});
-	})
+	});
+	describe('Line height', () => {
+		it('"varied" line height depends on characters used in the line', () => {
+			const result = arrangeSmart(b(
+				bs({lineHeight: 'varied'}, t(tp('aoc'))),
+				bs({lineHeight: 'varied'}, t(tp('lbt'))),
+				bs({lineHeight: 'varied'}, t(tp('qpy'))),
+				bs({lineHeight: 'varied'}, t(tp('Qp'))),
+			));
+			assertResult(result, 4, 0, 0, 30, 14 + 16 + 16 + 18 + 3 * 5);
+			assertWordVertex(result.vertices[0], 0, 0);
+			assertWordVertex(result.vertices[1], 0, 14 + 5);
+			assertWordVertex(result.vertices[2], 0, 14 + 16 + 10);
+			assertWordVertex(result.vertices[3], 0, 14 + 16 + 16 + 15);
+		});
+		it('"static" line height is static', () => {
+			const result = arrangeSmart(b(
+				bs({lineHeight: 'static'}, t(tp('aoc'))),
+				bs({lineHeight: 'static'}, t(tp('lbt'))),
+				bs({lineHeight: 'static'}, t(tp('qpy'))),
+				bs({lineHeight: 'static'}, t(tp('Qp'))),
+			));
+			assertResult(result, 4, 0, 2, 30, 18 * 4 + 5 * 3 - 2);
+			// noinspection PointlessArithmeticExpressionJS
+			assertWordVertex(result.vertices[0], 0, (18 + 5) * 0 + 2);
+			// noinspection PointlessArithmeticExpressionJS
+			assertWordVertex(result.vertices[1], 0, (18 + 5) * 1 + 0);
+			assertWordVertex(result.vertices[2], 0, (18 + 5) * 2 + 2);
+			assertWordVertex(result.vertices[3], 0, (18 + 5) * 3 + 0);
+		});
+	});
 });

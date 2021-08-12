@@ -1,4 +1,14 @@
-import {AllowedNewLines, AllowedStretches, AllowedStyles, AllowedTextAligns, AllowedVariants, AllowedWeights, AllowedWhiteSpace as AllowedWhiteSpaces, StyleOptions} from "../StyleOptions";
+import {
+	AllowedLineHeights,
+	AllowedNewLines,
+	AllowedStretches,
+	AllowedStyles,
+	AllowedTextAligns,
+	AllowedVariants,
+	AllowedWeights,
+	AllowedWhiteSpace as AllowedWhiteSpaces,
+	StyleOptions,
+} from "../StyleOptions";
 
 // Checks if the format is [+/-]<number>[.<number>][px]
 const validateFontSize = /^[+]?[0-9]+(?:[.][0-9]+)?(?:px)?$/;
@@ -179,6 +189,14 @@ export function cleanupStyleOption<T extends keyof StyleOptions>(
 		case "newLine":
 			if (!AllowedNewLines.has(value.toLowerCase())) {
 				errorCallback?.(field, value, `'${value}' is not a valid newLine value`);
+				return undefined;
+			}
+
+			return value;
+
+		case "lineHeight":
+			if (!AllowedLineHeights.has(value.toLowerCase())) {
+				errorCallback?.(field, value, `'${value}' is not a valid lineHeight value`);
 				return undefined;
 			}
 

@@ -26,6 +26,10 @@ export const AllowedWhiteSpace = new Set(['collapse-all', 'collapse-outer']);
  * A set of allowed newLine values
  */
 export const AllowedNewLines = new Set(['space', 'ignore', 'preserve']);
+/**
+ * A set of allowed lineHeight values
+ */
+export const AllowedLineHeights = new Set(['static', 'varied']);
 
 /**
  * A type containing the allowed fontStyle values
@@ -63,6 +67,10 @@ export type WhiteSpace = 'collapse-all'|'collapse-outer';
  * A type containing the allowed newLine values
  */
 export type NewLine = 'space'|'ignore'|'preserve';
+/**
+ * A type containing the allowed lineHeight values
+ */
+export type LineHeight = 'varied'|'static';
 
 /**
  * Style applied to the rich text.
@@ -141,4 +149,11 @@ export interface StyleOptions {
 	 *  - `preserve` - will cause a line break, the same as if <br> was there
 	 */
 	newLine: NewLine;
+	/**
+	 * How line height is calculated:
+	 *  - `varied` - Each line height depends on the height of its characters
+	 *  - `static` - Each line has the same height, the height being the maximum font height for standard
+	 *     alphanumeric characters
+	 */
+	lineHeight: LineHeight;
 }

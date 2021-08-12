@@ -5,7 +5,9 @@ export interface TextMeasure {
 	yOffset: number;
 	width: number;
 	height: number;
+	lineHeight: number;
 	ascent: number;
+	maxAscent: number;
 }
 
 export type MeasureTextCallback = (text: RichTextInlineWord) => TextMeasure;

@@ -1,7 +1,16 @@
 import {assert} from "chai";
 import {describe, it} from 'mocha';
 import {__isValidColor, cleanupStyleOption, validCssColorNames} from "./cleanupStyleOption";
-import {AllowedNewLines, AllowedStretches, AllowedStyles, AllowedTextAligns, AllowedVariants, AllowedWeights, AllowedWhiteSpace} from "../StyleOptions";
+import {
+	AllowedLineHeights,
+	AllowedNewLines,
+	AllowedStretches,
+	AllowedStyles,
+	AllowedTextAligns,
+	AllowedVariants,
+	AllowedWeights,
+	AllowedWhiteSpace,
+} from "../StyleOptions";
 
 let lastError = {
 	field: "",
@@ -206,7 +215,7 @@ describe("cleanupStyleOption", () => {
 			assert.equal(cleanupStyleOption("textAlign", style.toUpperCase()), style.toUpperCase());
 		}));
 		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
-			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+			const testValues = Array.from(AllowedTextAligns.values()).map(x => x + '-invalid').concat([
 				'',
 				' ',
 				'invalid',
@@ -225,7 +234,7 @@ describe("cleanupStyleOption", () => {
 			assert.equal(cleanupStyleOption("whiteSpace", style.toUpperCase()), style.toUpperCase());
 		}));
 		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
-			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+			const testValues = Array.from(AllowedWhiteSpace.values()).map(x => x + '-invalid').concat([
 				'',
 				' ',
 				'invalid',
@@ -244,7 +253,7 @@ describe("cleanupStyleOption", () => {
 			assert.equal(cleanupStyleOption("newLine", style.toUpperCase()), style.toUpperCase());
 		}));
 		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
-			const testValues = Array.from(AllowedStretches.values()).map(x => x + '-invalid').concat([
+			const testValues = Array.from(AllowedNewLines.values()).map(x => x + '-invalid').concat([
 				'',
 				' ',
 				'invalid',
@@ -252,6 +261,25 @@ describe("cleanupStyleOption", () => {
 			testValues.forEach(style => it(`'${style}'`, () => {
 				assert.equal(cleanupStyleOption("newLine", style, errorCallback), undefined);
 				assertError("newLine", style, `'${style}' is not a valid newLine value`);
+			}));
+		});
+	});
+
+	describe("lineHeight", () => {
+		Array.from(AllowedLineHeights.values()).forEach(style => it(`'${style}' is a valid value in all letter cases`, () => {
+			assert.equal(cleanupStyleOption("lineHeight", style), style);
+			assert.equal(cleanupStyleOption("lineHeight", style.toLowerCase()), style.toLowerCase());
+			assert.equal(cleanupStyleOption("lineHeight", style.toUpperCase()), style.toUpperCase());
+		}));
+		describe("Other stretch values are invalid and return undefined, also call error callback", () => {
+			const testValues = Array.from(AllowedLineHeights.values()).map(x => x + '-invalid').concat([
+				'',
+				' ',
+				'invalid',
+			]);
+			testValues.forEach(style => it(`'${style}'`, () => {
+				assert.equal(cleanupStyleOption("lineHeight", style, errorCallback), undefined);
+				assertError("lineHeight", style, `'${style}' is not a valid lineHeight value`);
 			}));
 		});
 	});

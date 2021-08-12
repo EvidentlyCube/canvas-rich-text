@@ -21,7 +21,8 @@ export const defaultStyle: StyleOptions = {
 	lineSpacing: 5,
 	whiteSpace: "collapse-all",
 	spaceWidth: 5,
-	newLine: 'preserve'
+	newLine: 'preserve',
+	lineHeight: 'static'
 };
 
 /**

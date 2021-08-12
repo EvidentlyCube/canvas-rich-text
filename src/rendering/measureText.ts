@@ -8,12 +8,15 @@ const context: CanvasRenderingContext2D = canvas !== undefined ? canvas.getConte
 export function measureText(text: RichTextInlineWord): TextMeasure {
 	configureCanvas(text.style, context);
 	const measure = context.measureText(text.text);
+	const lineHeightMeasure = context.measureText('WLMIpqjy10');
 
 	return {
 		width: measure.width,
 		height: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
+		lineHeight: lineHeightMeasure.actualBoundingBoxAscent + lineHeightMeasure.actualBoundingBoxDescent,
 		xOffset: measure.actualBoundingBoxLeft,
 		yOffset: measure.actualBoundingBoxAscent,
-		ascent: measure.actualBoundingBoxAscent
+		ascent: measure.actualBoundingBoxAscent,
+		maxAscent: lineHeightMeasure.actualBoundingBoxAscent
 	}
 }
