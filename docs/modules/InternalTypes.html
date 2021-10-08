@@ -74,11 +74,13 @@
 								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/InternalTypes.RichTextBlock.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Block</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/InternalTypes.RichTextInline.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Inline</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/InternalTypes.RichTextInlineWord.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Inline<wbr>Word</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-namespace"><a href="../interfaces/InternalTypes.TextMeasure.html" class="tsd-kind-icon">Text<wbr>Measure</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-namespace"><a href="InternalTypes.html#MeasureTextCallback" class="tsd-kind-icon">Measure<wbr>Text<wbr>Callback</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-namespace"><a href="InternalTypes.html#RichTextVertex" class="tsd-kind-icon">Rich<wbr>Text<wbr>Vertex</a></li>
 							</ul>
 						</section>
@@ -88,12 +90,48 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-namespace">
+					<a name="MeasureTextCallback" class="tsd-anchor"></a>
+					<h3>Measure<wbr>Text<wbr>Callback</h3>
+					<div class="tsd-signature tsd-kind-icon">Measure<wbr>Text<wbr>Callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><a href="../interfaces/InternalTypes.RichTextInlineWord.html" class="tsd-signature-type" data-tsd-kind="Interface">RichTextInlineWord</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="../interfaces/InternalTypes.TextMeasure.html" class="tsd-signature-type" data-tsd-kind="Interface">TextMeasure</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/08282fd/src/common.ts#L165">common.ts:165</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><a href="../interfaces/InternalTypes.RichTextInlineWord.html" class="tsd-signature-type" data-tsd-kind="Interface">RichTextInlineWord</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/InternalTypes.TextMeasure.html" class="tsd-signature-type" data-tsd-kind="Interface">TextMeasure</a></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>A function that measures a styled word</p>
+											</div>
+										</div>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>text: <a href="../interfaces/InternalTypes.RichTextInlineWord.html" class="tsd-signature-type" data-tsd-kind="Interface">RichTextInlineWord</a></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <a href="../interfaces/InternalTypes.TextMeasure.html" class="tsd-signature-type" data-tsd-kind="Interface">TextMeasure</a></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-namespace">
 					<a name="RichTextVertex" class="tsd-anchor"></a>
 					<h3>Rich<wbr>Text<wbr>Vertex</h3>
 					<div class="tsd-signature tsd-kind-icon">Rich<wbr>Text<wbr>Vertex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RichTextVertexWord</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/ec6c9d1/src/common.ts#L66">common.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/EvidentlyCube/canvas-rich-text/blob/08282fd/src/common.ts#L66">common.ts:66</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -137,6 +175,12 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
 						<a href="../interfaces/InternalTypes.RichTextInlineWord.html" class="tsd-kind-icon">Rich<wbr>Text<wbr>Inline<wbr>Word</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="../interfaces/InternalTypes.TextMeasure.html" class="tsd-kind-icon">Text<wbr>Measure</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="InternalTypes.html#MeasureTextCallback" class="tsd-kind-icon">Measure<wbr>Text<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
 						<a href="InternalTypes.html#RichTextVertex" class="tsd-kind-icon">Rich<wbr>Text<wbr>Vertex</a>
