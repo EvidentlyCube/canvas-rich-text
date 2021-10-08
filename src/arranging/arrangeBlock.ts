@@ -1,5 +1,4 @@
-import {RichTextBlock, RichTextInline, RichTextInlineWord, ArrangedRichText, RichTextVertex} from "../common";
-import {MeasureTextCallback} from "../rendering/internal";
+import {RichTextBlock, RichTextInline, RichTextInlineWord, ArrangedRichText, RichTextVertex, MeasureTextCallback} from "../common";
 import {StyleOptions} from "../StyleOptions";
 
 function isWordWhitespace(word: RichTextInlineWord) {

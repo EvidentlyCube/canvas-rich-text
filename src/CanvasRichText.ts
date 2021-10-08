@@ -1,9 +1,10 @@
 import {StyleOptions} from "./StyleOptions";
-import {RichTextBlock, ArrangedRichText, RichTextVertex} from "./common";
+import {RichTextBlock, ArrangedRichText, RichTextVertex, MeasureTextCallback} from "./common";
 import {arrangeBlocks} from "./arranging/arrangeBlock";
 import {measureText} from "./rendering/measureText";
 import {configureCanvas} from "./rendering/configureCanvas";
 
+const defaultMeasureText = measureText;
 /**
  * The default style. You can modify this to affect how the text will be rendered.
  */
@@ -28,9 +29,10 @@ export const defaultStyle: StyleOptions = {
 /**
  * Arranges a Rich Text Block into a format that can then be quickly drawn to canvas.
  * @param block Block returned from [[parseHtmlString]], or created either manually or from a custom parser
+ * @param measureText Optional custom function for measuring text dimensions
  */
-export function arrangeBlock(block: RichTextBlock): ArrangedRichText {
-	return arrangeBlocks(block, measureText);
+export function arrangeBlock(block: RichTextBlock, measureText?: MeasureTextCallback): ArrangedRichText {
+	return arrangeBlocks(block, measureText ?? defaultMeasureText);
 }
 
 /**
