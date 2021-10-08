@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.com/EvidentlyCube/canvas-rich-text.svg?branch=master)](https://travis-ci.com/EvidentlyCube/canvas-rich-text)
 
+----
+
+**I recommend using 2.0.0 branch and the `2.0.0-alpha` releases**. 1.x will not be developed further.
+
+----
+
 A way to render rich text in Canvas without resorting to SVG's `<foreignObject>`. It supports a very limited subset of HTML and CSS.
 
 ## Getting Started
